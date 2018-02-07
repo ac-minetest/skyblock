@@ -74,12 +74,9 @@ end
 
 
 function skyblock.spawn_island(pos, player_name)
-	--minetest.delete_area({x=pos.x-5,y=pos.y+6,z=pos.z-5},{x=pos.x+5,y=pos.y+10,z=pos.z+5});--clear above island
-	for i=0,1 do
-		for j = 0,0 do
-			minetest.set_node({x=pos.x+i, y=pos.y, z = pos.z+j}, {name = "default:dirt"})
-		end
-	end
+	minetest.set_node({x=pos.x, y=pos.y, z = pos.z}, {name = "default:desert_stonebrick"})
+	minetest.set_node({x=pos.x+1, y=pos.y, z = pos.z}, {name = "default:dirt"})
+	local meta = minetest.get_meta(pos);meta:set_string("infotext","ISLAND OF " .. player_name)
 end
 
 -- delete island near pos if there is more than 2 blocks placed 5 around spawn pos
@@ -92,7 +89,7 @@ skyblock.delete_island = function(pos, is_check) -- is_check: do we check for no
 	
 	if is_check then
 		local count = #minetest.find_nodes_in_area({x=ppos.x-5,y=ppos.y-5,z=ppos.z-5}, {x=ppos.x+5,y=ppos.y+5,z=ppos.z+5}, {"default:dirt","default:dirt_with_grass"});
-		if is_check and count<=2 then delete = false end -- we only have 2	dirt blocks!
+		if is_check and count<=1 then delete = false end -- we only have 1	dirt block!
 		--minetest.chat_send_all("#SKYBLOCK: detected " .. count .. " dirt near " .. ppos.x .. " " .. ppos.y .. " " .. ppos.z)
 	end
 	

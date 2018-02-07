@@ -2,6 +2,8 @@ SkyBlock - lightweight version
 minetest 0.4.16+
 (c) 2018 rnd
 
+Includes economic island management - players must reach level 2 before they truly own island - or it will be recycled and used by another player.
+
 needs: 
 	default minetest game
 

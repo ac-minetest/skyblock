@@ -187,7 +187,7 @@ minetest.register_on_shutdown(save_data) -- when server stops
 		pdata.last_login = minetest.get_gametime()
 		pdata.time_played = pdata.time_played or 0
 		
-		-- set island, set id
+		-- set island, set id for player
 		if level == 1 then -- new player only
 			local ids = skyblock.id_queue;
 			
@@ -198,7 +198,7 @@ minetest.register_on_shutdown(save_data) -- when server stops
 				
 				if id>=0 then 
 					local pos = skyblock.get_island_pos(id)
-					minetest.chat_send_all("#SKYBLOCK: spawning new island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z )
+					minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: spawning new island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
 					skyblock.spawn_island(pos, name)
 					player:setpos({x=pos.x,y=pos.y+4,z=pos.z}) -- teleport player to island
 					pdata.id = id
@@ -208,11 +208,14 @@ minetest.register_on_shutdown(save_data) -- when server stops
 				end
 			else 
 				id = ids[#ids]; ids[#ids] = nil; -- pop stack, reuse island
-				pdata.id = id;
 				local pos = skyblock.get_island_pos(id)
+				minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: reusing island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
+				pdata.id = id;
+				
 				minetest.after(5, function() skyblock.delete_island(pos, true) end) -- check for trash and delete it
 			end
-			
+		else
+			minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: welcome back " .. name .. " from island " .. id))
 		end
 		
 	end
@@ -255,12 +258,18 @@ local timer = 0;
 minetest.register_globalstep(
 	function(dtime)
 		timer = timer + dtime;
+		local t;
 		if timer > 1 then
 			timer = 0
 			local bottom = skyblock.bottom;
-			for _,player in ipairs(minetest.get_connected_players()) do -- MINETEST BUG: why we get huge lag if 'pairs' here?
+			for _,player in ipairs(minetest.get_connected_players()) do -- MINETEST BUG: why huge lag if 'pairs' here?
 				if player:getpos().y < bottom then 
-					player:get_inventory():set_list("main",{}) -- empty inventory
+					local name = player:get_player_name();
+					local pdata = skyblock.players[name];
+					t = t or minetest.get_gametime();
+					if t-pdata.last_login>10 then -- only reset inventory if player online for more than 10s to prevent spawn kills when falling through unloaded island
+						player:get_inventory():set_list("main",{}) -- empty inventory
+					end
 					respawn_player(player)
 				end
 			end

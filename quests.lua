@@ -18,7 +18,7 @@ skyblock.quests[1] = { -- level 1
 			local player = minetest.get_player_by_name(name);
 			local inv = player:get_inventory();
 			if not inv:contains_item("main",ItemStack("default:dirt 32")) then
-				minetest.chat_send_player(name,"#SKYBLOCK: you need to have 32 dirt in inventory to complete this quest!")
+				minetest.chat_send_player(name,"#SKYBLOCK: you need to have 32 dirt in inventory to complete this quest! Try again.")
 				return false
 			end
 			return true
