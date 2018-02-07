@@ -45,7 +45,7 @@ skyblock.quests[1] = { -- level 1
  skyblock.quests[2] = {
 	on_placenode = {
 		["default:stone"]={reward = "default:iron_lump", count=100, description = "place 100 stone"} ,
-		["default:dirt"]={reward = "", count=1, description = "place 1 dirt after you digged 100 dirt",
+		["default:dirt"]={reward = "default:papyrus", count=1, description = "place 1 dirt after you digged 100 dirt",
 			on_completed = function(pos,name) 
 				local player = minetest.get_player_by_name(name);
 				local pdata = skyblock.players[name];
@@ -89,13 +89,13 @@ skyblock.quests[1] = { -- level 1
 skyblock.quests[3] = {
 	
 	on_craft = {
-		["default:bookshelf"]={reward = "farming:rhubarb_3", count=4, description = "craft 4 bookshelves"},
-		["farming:rhubarb_pie"]={reward = "default:grass_1", count=1, description = "bake Rhubarb pie"},
-		["default:brick"]={reward = "moreores:mineral_tin", count=50, description = "craft 50 Brick"},
-		["default:mossycobble"]={reward = "moreores:mineral_silver", count=50, description = "craft 50 Mossy Cobblestone"},
-		["darkage:silt"]={reward = "moreores:mineral_mithril", count=50, description = "craft 50 silt"},
-		["default:stone_with_copper"]={reward = "default:gold_lump", count=25, description = "craft 50 Stone with Copper"},
-		["default:stone_with_mese"]={reward = "default:diamond", count=10, description = "craft 20 Stone with Mese"},
+		["default:bookshelf"]={reward = "farming:rhubarb_3", count=10, description = "craft 10 bookshelves"},
+		["farming:rhubarb_pie"]={reward = "default:grass_1", count=10, description = "bake 10 Rhubarb pie"},
+		["default:brick"]={reward = "moreores:mineral_tin", count=100, description = "craft 100 Brick"},
+		["default:mossycobble"]={reward = "moreores:mineral_silver", count=100, description = "craft 50 Mossy Cobblestone"},
+		["darkage:silt"]={reward = "moreores:mineral_mithril", count=100, description = "craft 100 silt"},
+		["default:stone_with_copper"]={reward = "default:gold_lump", count=50, description = "craft 100 Stone with Copper"},
+		["default:stone_with_mese"]={reward = "default:diamond", count=25, description = "craft 50 Stone with Mese"},
 	},
 	
 	on_placenode = {
@@ -107,6 +107,18 @@ skyblock.quests[3] = {
 				
 				if not inv:contains_item("main",ItemStack("default:steelblock 4")) then
 					minetest.chat_send_player(name,"#SKYBLOCK: you need to have 4 steel blocks in inventory. Try again!")
+					return false 
+				end
+				return true
+			end
+		},
+		["default:goldblock"]={reward = "default:mese_crystal", count=1, description = "place 1 goldblock while having 4 goldblocks in inventory",
+			on_completed = function(pos,name) 
+				local player = minetest.get_player_by_name(name);
+				local inv = player:get_inventory();
+				
+				if not inv:contains_item("main",ItemStack("default:goldblock 4")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: you need to have 4 gold blocks in inventory. Try again!")
 					return false 
 				end
 				return true
@@ -128,6 +140,56 @@ skyblock.quests[3] = {
 		["basic_machines:clockgen"]={reward = "farming:blueberries", count=1, description = "place clock generator"},
 		["basic_machines:autocrafter"]={reward = "farming:beans", count=1, description = "place autocrafter"},
 		["basic_machines:enviro"]={reward = "farming:tomato", count=1, description = "place enviroment block"},
+		["default:furnace"]={reward = "", count=1, description = "place furnace on top of battery_0 with 4000 diamondblocks",
+		on_completed = function(pos,name) 
+				pos.y=pos.y-1;
+				if minetest.get_node(pos).name ~= "basic_machines:battery_0" then return false end
+				local inv = minetest.get_meta(pos):get_inventory();
+				if not inv:contains_item("upgrade",ItemStack("default:diamondblock 4000")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: battery needs to have 4000 diamondblocks upgrade!")
+					return false 
+				end
+				return true
+			end
+		},
+		["default:diamondblock"]={reward = "", count=1, description = "place 1 diamondblock while having 1000 diamondblocks in inventory",
+			on_completed = function(pos,name) 
+				local player = minetest.get_player_by_name(name);
+				local inv = player:get_inventory();
+				
+				if not inv:contains_item("main",ItemStack("default:diamondblock 1000")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: you need to have 1000 steel blocks in inventory. Try again!")
+					return false 
+				end
+				return true
+			end
+		},
+		
+		["default:mese"]={reward = "", count=1, description = "place 1 meseblock while having 1000 mese blocks in inventory",
+			on_completed = function(pos,name) 
+				local player = minetest.get_player_by_name(name);
+				local inv = player:get_inventory();
+				
+				if not inv:contains_item("main",ItemStack("default:mese 1000")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: you need to have 1000 mese blocks in inventory. Try again!")
+					return false 
+				end
+				return true
+			end
+		},
+		
+		["default:goldblock"]={reward = "", count=1, description = "place 1 goldblock while having 1000 gold blocks in inventory",
+			on_completed = function(pos,name) 
+				local player = minetest.get_player_by_name(name);
+				local inv = player:get_inventory();
+				
+				if not inv:contains_item("main",ItemStack("default:goldblock 1000")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: you need to have 1000 gold blocks in inventory. Try again!")
+					return false 
+				end
+				return true
+			end
+		},
 	},
 	on_craft = {
 		["basic_robot:spawner"]={reward = "farming:cocoa_beans", count=1, description = "craft robot spawner"},

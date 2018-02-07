@@ -6,19 +6,11 @@ local quest_types = skyblock.quest_types;
  
 skyblock.init_level = function(name,level) -- inits/resets player achievements on level
 	if not skyblock.quests[level] then return end -- nonexistent quests
-	
 	local pdata = skyblock.players[name];
-	if not pdata then
-		skyblock.players[name] = { 
-			level = level, 
-			completed = 0,
-			time_played = 0,
-		};
-		pdata = skyblock.players[name];
-	end
 	
 	--reset current quests
 	for k,_ in pairs(quest_types) do pdata[k] = nil	end
+
 	pdata.completed = 0
 	pdata.level = level
 	
@@ -35,7 +27,7 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 			
 		end
 	end
-	pdata.total =  total;
+	pdata.total =  total; -- how many quests on this level
  end
  
   -- QUESTS TRACKING --
@@ -43,24 +35,26 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
  local track_quest = function(pos, item, digger, quest_type)
 	
 	local name = digger:get_player_name();
-	local pdata = skyblock.players[name];
+	local pdata = skyblock.players[name]; -- all player data
+	local qdata =  pdata[quest_type]; -- quest data for this player
+	if qdata and qdata[item] then else return end -- player has no such quest in progress!
+	
 	local level = pdata.level;
-	
 	local data = skyblock.quests[level][quest_type];
-	if not data or not data[item] then return end -- is there quest of this type and quest for this item?
+	if data and data[item] then data = data[item] else return end -- is there quest of this type and quest for this item?
+
+	local count = qdata[item]; 
 	
-	local count = pdata[quest_type][item]; 
-	
-	if count < data[item].count then -- only if quest not yet completed
+	if count < data.count then -- only if quest not yet completed
 		count = count + 1
-		pdata[quest_type][item] = count;
-		if count >= data[item].count then-- did we just complete the quest?
-			if data[item].on_completed and not data[item].on_completed(pos,name) then 
-				pdata[quest_type][item] = data[item].count - 1 -- reset count to just below limit
+		qdata[item] = count;
+		if count >= data.count then-- did we just complete the quest?
+			if data.on_completed and not data.on_completed(pos,name) then 
+				qdata[item] = data.count - 1 -- reset count to just below limit
 				return 
 			end
-			minetest.chat_send_all("#SKYBLOCK: " .. name .. " completed '" .. data[item].description .. "' on level " .. level)
-			digger:get_inventory():add_item("craft", ItemStack(data[item].reward)) -- give reward to player
+			minetest.chat_send_all("#SKYBLOCK: " .. name .. " completed '" .. data.description .. "' on level " .. level)
+			digger:get_inventory():add_item("craft", ItemStack(data.reward)) -- give reward to player
 			
 			pdata.completed = pdata.completed + 1 -- one more quest completed
 			if pdata.completed >= pdata.total then skyblock.quests[level].on_completed(name) end -- did we complete level?
@@ -99,14 +93,17 @@ mkdir(filepath) -- create if non existent
  
 function load_player_data(name)
 	local file,err = io.open(filepath..'/'..name, 'rb')
-	if err then return nil end
-	local pdatastring = file:read("*a");
-	file:close()
-	local pdata = minetest.deserialize(pdatastring);
-
-	if pdata and pdata.level then
-		skyblock.players[name] = pdata; return
+	local pdata = {};
+	if not err then -- load from file
+		local pdatastring = file:read("*a");
+		file:close()
+		pdata = minetest.deserialize(pdatastring) or {};
 	end
+	
+	pdata.stats = pdata.stats or {};  -- init
+	pdata.stats.time_played = pdata.stats.time_played or 0
+	pdata.stats.last_login = minetest.get_gametime() -- update
+	skyblock.players[name] = pdata; return
 end 
  
 function save_player_data(name)
@@ -116,7 +113,7 @@ function save_player_data(name)
 	if not pdata then return end
 
 	local t = minetest.get_gametime();
-	pdata.time_played = pdata.time_played + (t-pdata.last_login) -- update total play time
+	pdata.stats.time_played = pdata.stats.time_played + (t-pdata.stats.last_login) -- update total play time
 	local pdatastring = minetest.serialize(pdata)
 	file:write(pdatastring)
 	file:close()
@@ -172,11 +169,9 @@ minetest.register_on_shutdown(save_data) -- when server stops
 		local name = player:get_player_name();
 		load_player_data(name); -- attempt to load previous data
 		local pdata = skyblock.players[name];
-		
 		local level = 1;
 		local id = -1;
-		
-		if not pdata then -- init for new player
+		if not pdata.level then -- init for new player
 			skyblock.init_level(name,1)
 			pdata = skyblock.players[name];
 			minetest.chat_send_player(name, "#SKYBLOCK: welcome to skyblock. Open inventory and check the quests.")
@@ -184,9 +179,6 @@ minetest.register_on_shutdown(save_data) -- when server stops
 			level = pdata.level
 			id = pdata.id
 		end
-		pdata.last_login = minetest.get_gametime()
-		pdata.time_played = pdata.time_played or 0
-		
 		-- set island, set id for player
 		if level == 1 then -- new player only
 			local ids = skyblock.id_queue;
@@ -217,7 +209,6 @@ minetest.register_on_shutdown(save_data) -- when server stops
 		else
 			minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: welcome back " .. name .. " from island " .. id))
 		end
-		
 	end
 )
 
@@ -267,7 +258,7 @@ minetest.register_globalstep(
 					local name = player:get_player_name();
 					local pdata = skyblock.players[name];
 					t = t or minetest.get_gametime();
-					if t-pdata.last_login>10 then -- only reset inventory if player online for more than 10s to prevent spawn kills when falling through unloaded island
+					if pdata and t-pdata.stats.last_login>10 then -- only reset inventory if player online for more than 10s to prevent spawn kills when falling through unloaded island
 						player:get_inventory():set_list("main",{}) -- empty inventory
 					end
 					respawn_player(player)
@@ -284,7 +275,7 @@ minetest.register_globalstep(
 	if not pdata then return end
 	local level = pdata.level;
 	local t = minetest.get_gametime();
-	t = pdata.time_played + t-pdata.last_login
+	t = pdata.stats.time_played + t-pdata.stats.last_login
 	t=math.floor(t/60*100)/100
 	
 	local formspec = "size[8,8]";		
