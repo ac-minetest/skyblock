@@ -203,8 +203,9 @@ minetest.register_on_shutdown(save_data) -- when server stops
 				local pos = skyblock.get_island_pos(id)
 				minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: reusing island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
 				pdata.id = id;
+				player:setpos({x=pos.x,y=pos.y+4,z=pos.z}) -- teleport player to island
 				
-				minetest.after(5, function() skyblock.delete_island(pos, true) end) -- check for trash and delete it
+				minetest.after(5, function() skyblock.delete_island(pos, true);skyblock.spawn_island(pos, name) end) -- check for trash and delete it
 			end
 		else
 			minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: welcome back " .. name .. " from island " .. id))
@@ -233,6 +234,7 @@ minetest.register_on_leaveplayer(
 local respawn_player = function(player)
 		local name = player:get_player_name();
 		local pdata = skyblock.players[name];
+		
 		local pos = skyblock.get_island_pos(pdata.id);
 		if not pos then minetest.chat_send_all("#SKYBLOCK ERROR: spawnpos for " .. name .. " nonexistent") return end
 		
@@ -301,9 +303,9 @@ minetest.register_globalstep(
 						end
 					end
 					
-					local count = pdata[qtype][item];
-					local tcount = qdef.count;
-					local desc = qdef.description;
+					local count = pdata[qtype][item] or -1;
+					local tcount = qdef.count or -1;
+					local desc = qdef.description or "ERROR!";
 					if count>=tcount then 
 						desc = minetest.colorize("Green", desc) 
 					else 

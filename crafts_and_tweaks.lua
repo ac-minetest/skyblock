@@ -225,7 +225,7 @@ local skyblock_grow_sapling = function (pos)
 	elseif node.name == "default:pine_sapling" then
 		--minetest.log("action", "A pine sapling grows into a tree at "..
 			--minetest.pos_to_string(pos))
-		local snow = is_snow_nearby(pos)
+		local snow = false --is_snow_nearby(pos)
 		if mg_name == "v6" then
 			default.grow_pine_tree(pos, snow)
 		elseif snow then
