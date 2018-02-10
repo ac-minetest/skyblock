@@ -77,7 +77,8 @@ function skyblock.spawn_island(pos, name)
 	local pdata = skyblock.players[name]; if not pdata then return end
 	minetest.set_node({x=pos.x, y=pos.y, z = pos.z}, {name = "default:desert_stonebrick"})
 	minetest.set_node({x=pos.x+1, y=pos.y, z = pos.z}, {name = "default:dirt"})
-	local meta = minetest.get_meta(pos);meta:set_string("infotext","ISLAND " .. pdata.it .. ": " .. name)
+	local meta = minetest.get_meta(pos);
+	meta:set_string("infotext","ISLAND " .. (pdata.id or "?") .. ": " .. name)
 end
 
 -- delete island near pos if there is more than 2 blocks placed 5 around spawn pos
@@ -92,6 +93,7 @@ skyblock.delete_island = function(pos, is_check) -- is_check: do we check for no
 		local count = #minetest.find_nodes_in_area({x=ppos.x-5,y=ppos.y-5,z=ppos.z-5}, {x=ppos.x+5,y=ppos.y+5,z=ppos.z+5}, {"default:dirt"});
 		if is_check and count<=1 then delete = false end -- we only have 1	dirt block!
 		--minetest.chat_send_all("#SKYBLOCK: detected " .. count .. " dirt near " .. ppos.x .. " " .. ppos.y .. " " .. ppos.z)
+		if not delete and minetest.find_node_near(ppos, 5, "default:chest") then delete = true end
 	end
 	
 	if delete then

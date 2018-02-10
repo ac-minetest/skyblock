@@ -1,3 +1,84 @@
+-- RECIPE TWEAKS
+-- few borrowed from cornernote Skyblock
+
+
+-- COOKING mechanics
+local adjust_stone_with_ore = function(input,output,cooktime)
+	minetest.register_craft({
+		type = 'cooking',
+		output = output,
+		recipe = input,
+        cooktime = cooktime
+	})
+
+	minetest.override_item(input, {drop=input})
+end
+
+if minetest.registered_nodes["moreores:mineral_mithril"] then
+	adjust_stone_with_ore("moreores:mineral_mithril","moreores:mithril_lump",1500)
+	adjust_stone_with_ore("moreores:mineral_silver","moreores:silver_lump",30)
+	adjust_stone_with_ore("moreores:mineral_tin","moreores:tin_lump",16)
+end
+
+adjust_stone_with_ore("default:stone_with_diamond","default:diamond",1000)
+adjust_stone_with_ore("default:stone_with_mese","default:mese_crystal",500)
+adjust_stone_with_ore("default:stone_with_gold","default:gold_lump",50)
+adjust_stone_with_ore("default:stone_with_copper","default:copper_lump",16)
+adjust_stone_with_ore("default:stone_with_iron","default:iron_lump",16)
+adjust_stone_with_ore("default:stone_with_coal","default:coal_lump",8)
+
+
+-- DIGGING speeds
+local function adjust_dig_speed(name,factor)
+	local table = minetest.registered_items[name];
+	if not table then return end
+	local table2 = {};
+	for i,v in pairs(table) do table2[i] = v end
+		
+	for i,v in pairs(table2.tool_capabilities.groupcaps.cracky.times) do
+		table2.tool_capabilities.groupcaps.cracky.times[i] = v*factor
+	end	
+	
+	minetest.register_tool(":"..name, table2)	
+end
+
+
+
+minetest.after(1,
+function()
+	adjust_dig_speed("default:pick_wood",5)
+	adjust_dig_speed("default:pick_stone",3)
+	adjust_dig_speed("default:pick_steel", 3)
+	adjust_dig_speed("default:pick_bronze",2)
+	adjust_dig_speed("default:pick_mese",2)
+	adjust_dig_speed("default:pick_diamond",1)
+	adjust_dig_speed("moreores:pick_silver",2)
+	adjust_dig_speed("moreores:pick_mithril",1)
+end
+)
+
+-- UNBUILDABLE LIQUIDS
+
+local function make_it_unbuildable(name)
+	
+	local table = minetest.registered_nodes[name]; if not table then return end
+	local table2 = {}
+	for i,v in pairs(table) do
+		table2[i] = v
+	end
+	table2.buildable_to = false
+	minetest.register_node(":"..name, table2)
+end 
+
+minetest.after(0, function()
+	make_it_unbuildable("default:water_source")
+	make_it_unbuildable("default:water_flowing")
+	make_it_unbuildable("default:lava_source")
+	make_it_unbuildable("default:lava_flowing")
+end
+)
+
+
 -- desert_stone
 minetest.register_craft({
 	output = 'default:desert_stone',
@@ -70,32 +151,6 @@ minetest.register_craft({
 		{'default:stone'},
 	}
 })
-
--- more gameplay
-local adjust_stone_with_ore = function(input,output,cooktime)
-	minetest.register_craft({
-		type = 'cooking',
-		output = output,
-		recipe = input,
-        cooktime = cooktime
-	})
-
-	minetest.override_item(input, {drop=input})
-end
-
-if minetest.registered_nodes["moreores:mineral_mithril"] then
-	adjust_stone_with_ore("moreores:mineral_mithril","moreores:mithril_lump",1500)
-	adjust_stone_with_ore("moreores:mineral_silver","moreores:silver_lump",30)
-	adjust_stone_with_ore("moreores:mineral_tin","moreores:tin_lump",16)
-end
-
-adjust_stone_with_ore("default:stone_with_diamond","default:diamond",1000)
-adjust_stone_with_ore("default:stone_with_mese","default:mese_crystal",500)
-adjust_stone_with_ore("default:stone_with_gold","default:gold_lump",50)
-adjust_stone_with_ore("default:stone_with_copper","default:copper_lump",16)
-adjust_stone_with_ore("default:stone_with_iron","default:iron_lump",16)
-adjust_stone_with_ore("default:stone_with_coal","default:coal_lump",8)
-
 
 
 -- locked_chest from chest
@@ -182,7 +237,9 @@ minetest.register_craft({
 -- TWEAKS
 
 -- trees
-local trees = {'default:tree','default:jungletree','default:pinetree'}
+local trees = {'default:tree','default:jungletree','default:pine_tree',"default:wood","default:junglewood","default:pine_wood",
+"default:acacia_tree", "default:acacia_wood", "default:aspen_tree", "default:aspen_wood"}
+
 for k,node in ipairs(trees) do
 	local groups = minetest.registered_nodes[node].groups
 	groups.oddly_breakable_by_hand = 0

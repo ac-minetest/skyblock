@@ -36,6 +36,10 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 	
 	local name = digger:get_player_name();
 	local pdata = skyblock.players[name]; -- all player data
+	
+	local stats = pdata.stats;--update stats 
+	stats[quest_type] = (stats[quest_type] or 0) + 1
+	
 	local qdata =  pdata[quest_type]; -- quest data for this player
 	if qdata and qdata[item] then else return end -- player has no such quest in progress!
 	
@@ -63,9 +67,9 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 	
  end
  
- -- track node dig
- minetest.register_on_dignode(
-	function(pos, oldnode, digger)	track_quest(pos,oldnode.name, digger, "on_dignode") end
+ -- track node dig: NOTE: some crazy minetest mods actually call on_dignode with nil digger! (like builtin/falling.lua)
+ minetest.register_on_dignode( 
+	function(pos, oldnode, digger) if digger then track_quest(pos,oldnode.name, digger, "on_dignode") end end
  )
  
 -- track node place
@@ -185,7 +189,6 @@ minetest.register_on_shutdown(save_data) -- when server stops
 			
 			if #ids == 0 then 
 				skyblock.max_id = skyblock.max_id + 1 -- out of free islands,make new island
-				--minetest.chat_send_all("D max_id increased to " .. skyblock.max_id )
 				id = skyblock.max_id;
 				
 				if id>=0 then 
@@ -240,11 +243,11 @@ local respawn_player = function(player)
 		
 		skyblock.init_level(name,pdata.level or 1)
 		if pdata.level == 1 then 
-			skyblock.spawn_island(pos, name)
+			if not minetest.find_node_near(pos, 5, "default:dirt") then
+				skyblock.spawn_island(pos, name)
+			end
 		end
-		
 		pos.y=pos.y+4; player:setpos(pos) -- teleport player to island
-		--minetest.chat_send_all("#SKYBLOCK: respawning player " .. name .. " to " .. pos.x .. " " .. pos.y .. " " .. pos.z)
 end
 
 local timer = 0;
@@ -276,16 +279,12 @@ minetest.register_globalstep(
 	local pdata = skyblock.players[name];
 	if not pdata then return end
 	local level = pdata.level;
-	local t = minetest.get_gametime();
-	t = pdata.stats.time_played + t-pdata.stats.last_login
-	t=math.floor(t/60*100)/100
-	
 	local formspec = "size[8,8]";		
 	
 	local form  = 
 		"size[8,8]"..
-		"label[0,0;".. minetest.colorize("red","SKYBLOCK QUESTS: " .. name .. ", level " .. level) .. "]"..
-		"label[0,0.4;".. "play time : " ..  t .. " min]"..
+		"label[0,0;".. minetest.colorize("orange","SKYBLOCK QUESTS]")..
+		"label[0,0.4;".. minetest.colorize("orange", name .. ", level " .. level) .. "]"..
 		"label[-0.25,0.5;________________________________________________________________________________]";
 	local y = 0;
 	for qtype,quest in pairs(skyblock.quests[level]) do
@@ -308,8 +307,8 @@ minetest.register_globalstep(
 					local desc = qdef.description or "ERROR!";
 					if count>=tcount then 
 						desc = minetest.colorize("Green", desc) 
-					else 
-						desc = minetest.colorize("Orange", desc) 
+					--else 
+						--desc = minetest.colorize("Orange", desc) 
 					end
 					
 					form = form .. 
@@ -325,11 +324,30 @@ minetest.register_globalstep(
  	
 end
 
+ local get_stats_form = function(name) -- quest gui formspec
+	local pdata = skyblock.players[name];
+	if not pdata then return end
+	local stats = pdata.stats;
+	local t = minetest.get_gametime();
+	t = stats.time_played + t-stats.last_login -- s
+	local t_ = {math.floor(t/3600),math.floor((t-math.floor(t/3600)*3600)/60)};
+	t=t-t_[1]*3600-t_[2]*60;
+	local form  = 
+		"size[8,8]"..
+		"label[0,0..;".. minetest.colorize("orange","STATISTICS for " .. name) .. "]"..
+		"label[-0.25,0.5;________________________________________________________________________________]"..
+		"label[0,1.;".."play time        : " ..  t_[1] .. " hour " .. t_[2] .. " min " .. t .. "s]"..
+		"label[0,1.5;"..   "blocks digged : " ..  (stats.on_dignode or 0) .. "]" ..
+		"label[0,2;".. "blocks placed : " ..  (stats.on_placenode or 0) .. "]" ..
+		"label[0,2.5;"..   "items crafted  : " ..  (stats.on_craft or 0) .. "]"
+ return form
+ end
+
 
 -- add gui tab using sfinv
 if sfinv then
 	sfinv.register_page("sfinv:skyblock", {
-		title = "Skyblock",
+		title = "Quests",
 		get = function(self, player, context)
 			
 			local content = get_quest_form(player:get_player_name());
@@ -352,6 +370,31 @@ if sfinv then
 		end
 	end,
 	})
+	
+	sfinv.register_page("sfinv:skystats", {
+		title = "Stats",
+		get = function(self, player, context)
+			
+			local content = get_stats_form(player:get_player_name()); 
+		
+			local tmp = {
+			"size[8,8.6]",
+			"bgcolor[#080808BB;true]" .. default.gui_bg .. default.gui_bg_img,
+			sfinv.get_nav_fs(player, context, context.nav_titles, context.nav_idx),
+			content,
+			"button[6,0.;2,1;skystats_update;REFRESH]"
+			}
+			return table.concat(tmp, "")
+		end,
+		
+		on_player_receive_fields = function(self, player, context, fields)
+		if fields.skystats_update then -- refresh
+			local fs = sfinv.get_formspec(player,
+				context or sfinv.get_or_create_context(player))
+			player:set_inventory_formspec(fs)
+		end
+	end,
+	})
 end
 
  
@@ -365,6 +408,20 @@ end
 			if form then minetest.show_formspec(name, "skyblock_quests",form) end
 		else
 			minetest.show_formspec(name, "skyblock_quests",get_quest_form(name))
+		end
+	end,
+})
+
+minetest.register_chatcommand('stats', {
+	description = 'Show stats for skyblock player',
+	privs = {},
+	params = "",
+	func = function(name, param)
+		if param and param~= "" then
+			local form = get_stats_form(param);
+			if form then minetest.show_formspec(name, "skyblock_stats",form) end
+		else
+			minetest.show_formspec(name, "skyblock_stats",get_stats_form(name))
 		end
 	end,
 })
