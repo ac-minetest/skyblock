@@ -18,6 +18,24 @@ if minetest.registered_nodes["moreores:mineral_mithril"] then
 	adjust_stone_with_ore("moreores:mineral_mithril","moreores:mithril_lump",1500)
 	adjust_stone_with_ore("moreores:mineral_silver","moreores:silver_lump",30)
 	adjust_stone_with_ore("moreores:mineral_tin","moreores:tin_lump",16)
+		
+	
+	minetest.register_craft({
+		output = 'default:moreores:mineral_tin 2',
+		recipe = {
+			{'moreores:tin_lump'},
+			{'default:stone'},
+		}
+	})
+	
+	minetest.register_craft({
+		output = 'default:moreores:mineral_silver 2',
+		recipe = {
+			{'moreores:silver_lump'},
+			{'default:stone'},
+		}
+	})
+
 end
 
 adjust_stone_with_ore("default:stone_with_diamond","default:diamond",1000)

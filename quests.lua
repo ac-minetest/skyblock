@@ -90,10 +90,10 @@ skyblock.quests[3] = {
 	
 	on_craft = {
 		["default:bookshelf"]={reward = "farming:rhubarb_3", count=10, description = "craft 10 bookshelves"},
-		["farming:rhubarb_pie"]={reward = "default:grass_1", count=10, description = "bake 10 Rhubarb pie"},
-		["default:brick"]={reward = "moreores:mineral_tin", count=100, description = "craft 100 Brick"},
-		["default:mossycobble"]={reward = "moreores:mineral_silver", count=100, description = "craft 50 Mossy Cobblestone"},
-		["darkage:silt"]={reward = "moreores:mineral_mithril", count=100, description = "craft 100 silt"},
+		["farming:rhubarb_pie"]={reward = "moreores:mineral_mithril", count=10, description = "bake 10 Rhubarb pie"},
+		["default:brick"]={reward = "moreores:mineral_silver", count=100, description = "craft 100 Brick"},
+		["default:mossycobble"]={reward = "moreores:mineral_tin", count=100, description = "craft 50 Mossy Cobblestone"},
+		["darkage:silt"]={reward = "default:grass_1", count=100, description = "craft 300 silt"},
 		["default:stone_with_copper"]={reward = "default:gold_lump", count=50, description = "craft 100 Stone with Copper"},
 		["default:stone_with_mese"]={reward = "default:diamond", count=25, description = "craft 50 Stone with Mese"},
 	},

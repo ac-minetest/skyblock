@@ -283,8 +283,7 @@ minetest.register_globalstep(
 	
 	local form  = 
 		"size[8,8]"..
-		"label[0,0;".. minetest.colorize("orange","SKYBLOCK QUESTS]")..
-		"label[0,0.4;".. minetest.colorize("orange", name .. ", level " .. level) .. "]"..
+		"label[0,0;".. minetest.colorize("orange","SKYBLOCK QUESTS - LEVEL " .. level .. "]")..
 		"label[-0.25,0.5;________________________________________________________________________________]";
 	local y = 0;
 	for qtype,quest in pairs(skyblock.quests[level]) do
