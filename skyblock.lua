@@ -11,6 +11,7 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 	--reset current quests
 	for k,_ in pairs(quest_types) do pdata[k] = nil	end
 
+	pdata.data = {}; -- various extra data that can be used for more complex quests
 	pdata.completed = 0
 	pdata.level = level
 	
@@ -21,7 +22,7 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 			local w = {};
 			for k_,v_ in pairs(v) do
 				w[k_] = 0; 
-				total =  total + 1;
+				if not v_.hidden then total =  total + 1 end -- hidden quests dont count towards goal
 			end
 			pdata[k] = w; -- for example: pdata.on_dignode = {["default:dirt"]=0}
 			
@@ -50,8 +51,18 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 	local count = qdata[item]; 
 	
 	if count < data.count then -- only if quest not yet completed
+		if data.hidden then -- quest is hidden, doesnt count toward progress
+			if data.on_progress then  -- optionally do something extra
+				if data.on_progress(pdata.data) then qdata[item] = data.count end -- if on_progress returns true we are done, stop tracking
+				return
+			end
+		end
+		
 		count = count + 1
 		qdata[item] = count;
+		if data.on_progress then  -- optionally do something extra
+			if data.on_progress(pdata.data) then count = data.count end -- if on_progress returns true we are done
+		end
 		if count >= data.count then-- did we just complete the quest?
 			if data.on_completed and not data.on_completed(pos,name) then 
 				qdata[item] = data.count - 1 -- reset count to just below limit
@@ -241,8 +252,8 @@ local respawn_player = function(player)
 		local pos = skyblock.get_island_pos(pdata.id);
 		if not pos then minetest.chat_send_all("#SKYBLOCK ERROR: spawnpos for " .. name .. " nonexistent") return end
 		
-		skyblock.init_level(name,pdata.level or 1)
 		if pdata.level == 1 then 
+			skyblock.init_level(name,1)
 			if not minetest.find_node_near(pos, 5, "default:dirt") then
 				skyblock.spawn_island(pos, name)
 			end

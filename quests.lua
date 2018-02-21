@@ -65,7 +65,7 @@ skyblock.quests[1] = { -- level 1
 	on_dignode = {
 		["basic_protect:protector"] = {reward = "default:pick_steel", count=1, description = "place and dig protector"} ,
 		["default:jungletree"]={reward = "default:stone_with_copper", count=100, description = "dig 100 jungle tree"},
-		["default:dirt"]={reward = "default:coal_lump", count=100, description = "dig 100 dirt"} 
+		["default:dirt"]={reward = "default:coal_lump", count=100, description = "produce and dig 100 dirt without placing it"} 
 	},
 	
 	on_craft = {
