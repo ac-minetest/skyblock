@@ -21,11 +21,17 @@ skyblock.quests[1] = { -- level 1
 				minetest.chat_send_player(name,"#SKYBLOCK: you need to have 32 dirt in inventory to complete this quest! Try again.")
 				return false
 			end
+			minetest.chat_send_player(name,"#SKYBLOCK: if water meets flowing lava it will create stone. But keep water away from lava source!")
 			return true
 		end
 		},
 		["default:furnace"]={reward = "default:axe_steel", count=4, description = "craft 4 furnace"},
-		["default:sapling"]={reward = "default:axe_wood", count=5, description = "craft 5 saplings"}
+		["default:sapling"]={reward = "default:axe_wood", count=5, description = "craft 5 saplings",
+			on_completed = function(pos,name) 
+				minetest.chat_send_player(name,"#SKYBLOCK: you can craft 'composter' from wood planks and use it to make more dirt. Look in craft guide for craft recipe.")
+				return true
+			end
+		}
 	},
 	
 	on_completed = function(name) -- what to do when level completed?
@@ -57,6 +63,7 @@ skyblock.quests[1] = { -- level 1
 				elseif step<100 then 
 					return false
 				end
+				minetest.chat_send_player(name,"#SKYBLOCK: plant papyrus on dirt 3 blocks near water to grow more.")
 				return true
 			end
 		} 
@@ -65,7 +72,12 @@ skyblock.quests[1] = { -- level 1
 	on_dignode = {
 		["basic_protect:protector"] = {reward = "default:pick_steel", count=1, description = "place and dig protector"} ,
 		["default:jungletree"]={reward = "default:stone_with_copper", count=100, description = "dig 100 jungle tree"},
-		["default:dirt"]={reward = "default:coal_lump", count=100, description = "produce and dig 100 dirt without placing it"} 
+		["default:dirt"]={reward = "default:coal_lump", count=100, description = "produce and dig 100 dirt without placing it",
+			on_completed = function(pos,name) 
+				minetest.chat_send_player(name,"#SKYBLOCK: To make more coal first craft stone_with_coal and then smelt it.")
+				return true
+			end
+		},
 	},
 	
 	on_craft = {
@@ -79,7 +91,7 @@ skyblock.quests[1] = { -- level 1
 		local player = minetest.get_player_by_name(name);
 		local inv = player:get_inventory();
 		inv:add_item("craft",ItemStack("default:water_source")) 
-		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get another water source as reward.")
+		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get another water source as reward. place it diagonally to another water to make infinite water source.")
 		
 		skyblock.init_level(name,3); -- start level 3
 	end,
@@ -89,13 +101,23 @@ skyblock.quests[1] = { -- level 1
 skyblock.quests[3] = {
 	
 	on_craft = {
-		["default:bookshelf"]={reward = "farming:rhubarb_3", count=10, description = "craft 10 bookshelves"},
-		["farming:rhubarb_pie"]={reward = "moreores:mineral_mithril", count=10, description = "bake 10 Rhubarb pie"},
+		["default:bookshelf"]={reward = "farming:rhubarb_3", count=10, description = "craft 10 bookshelves",
+		on_completed = function(pos,name)
+				minetest.chat_send_player(name,"#SKYBLOCK: place rhubarb on farming dirt ( prepare dirt with hoe). Be careful to fertilize dirt first and fix any weeds while growing by punching them in time.")
+				return true
+			end,
+		},
+		["farming:rhubarb_pie"]={reward = "default:diamond", count=10, description = "bake 10 Rhubarb pie"},
 		["default:brick"]={reward = "moreores:mineral_silver", count=100, description = "craft 100 Brick"},
-		["default:mossycobble"]={reward = "moreores:mineral_tin", count=100, description = "craft 50 Mossy Cobblestone"},
-		["darkage:silt"]={reward = "default:grass_1", count=100, description = "craft 300 silt"},
+		["default:mossycobble"]={reward = "moreores:mineral_tin", count=100, description = "craft 100 Mossy Cobblestone"},
+		["darkage:silt"]={reward = "moreores:mineral_mithril", count=100, description = "craft 300 silt"},
 		["default:stone_with_copper"]={reward = "default:gold_lump", count=50, description = "craft 100 Stone with Copper"},
-		["default:stone_with_mese"]={reward = "default:diamond", count=25, description = "craft 50 Stone with Mese"},
+		["default:stone_with_mese"]={reward = "default:grass_1", count=25, description = "craft 50 Stone with Mese",
+			on_completed = function(pos,name)
+				minetest.chat_send_player(name,"#SKYBLOCK: place grass on dirt and wait. You will get green dirt which will spread around and slowly grow more grass and flowers. You can get seeds by digging grass.")
+				return true
+			end,
+		},
 	},
 	
 	on_placenode = {

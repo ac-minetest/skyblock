@@ -69,8 +69,8 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 				return 
 			end
 			minetest.chat_send_all("#SKYBLOCK: " .. name .. " completed '" .. data.description .. "' on level " .. level)
-			digger:get_inventory():add_item("craft", ItemStack(data.reward)) -- give reward to player
-			
+			--digger:get_inventory():set_stack("craft", 1, ItemStack(data.reward))
+			digger:get_inventory():add_item("craft", ItemStack(data.reward))  -- give reward to player
 			pdata.completed = pdata.completed + 1 -- one more quest completed
 			if pdata.completed >= pdata.total then skyblock.quests[level].on_completed(name) end -- did we complete level?
 		end
@@ -142,7 +142,7 @@ function save_data(name) -- on shutdown
 	for _,player in ipairs(minetest.get_connected_players()) do -- save connected players if their level enough
 		local name = player:get_player_name();
 		local pdata = skyblock.players[name];
-		if pdata.level>1 then -- save players
+		if pdata.level~=1 then -- save players
 			save_player_data(name)
 		else -- free id
 			ids[#ids+1] = pdata.id
@@ -205,9 +205,10 @@ minetest.register_on_shutdown(save_data) -- when server stops
 				if id>=0 then 
 					local pos = skyblock.get_island_pos(id)
 					minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: spawning new island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
+					pdata.id = id
 					skyblock.spawn_island(pos, name)
 					player:setpos({x=pos.x,y=pos.y+4,z=pos.z}) -- teleport player to island
-					pdata.id = id
+					
 				else
 					minetest.chat_send_all("#SKYBLOCK ERROR: skyblock.max_id is <0")
 					return

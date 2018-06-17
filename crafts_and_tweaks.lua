@@ -29,7 +29,7 @@ if minetest.registered_nodes["moreores:mineral_mithril"] then
 	})
 	
 	minetest.register_craft({
-		output = 'default:moreores:mineral_silver 2',
+		output = 'moreores:mineral_silver 2',
 		recipe = {
 			{'moreores:silver_lump'},
 			{'default:stone'},
