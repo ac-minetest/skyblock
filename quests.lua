@@ -43,7 +43,7 @@ skyblock.quests[1] = { -- level 1
 		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get protector as reward.")
 		
 		skyblock.init_level(name,2); -- start level 2
-		
+		skyblock.save_data() --save id_queue data so that this players island is safe even if crash
 	end,
 }
  

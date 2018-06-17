@@ -134,7 +134,7 @@ function save_player_data(name)
 	file:close()
 end
 
-function save_data(name) -- on shutdown
+function save_data() -- on shutdown save: all connected players (with level ~=1) data, queue data
 	local file,err = io.open(filepath..'/_SKYBLOCK_', 'wb')
 	if err then return nil end
 	
@@ -154,6 +154,7 @@ function save_data(name) -- on shutdown
 	file:close()
 	
 end
+skyblock.save_data = save_data;
 
 -- SKYBLOCK ISLAND MANAGEMENT
 --[[
