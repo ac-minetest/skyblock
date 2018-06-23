@@ -109,8 +109,6 @@ skyblock.quests[3] = {
 		},
 		["farming:rhubarb_pie"]={reward = "default:diamond", count=10, description = "bake 10 Rhubarb pie"},
 		["default:brick"]={reward = "moreores:mineral_silver", count=100, description = "craft 100 Brick"},
-		["default:mossycobble"]={reward = "moreores:mineral_tin", count=100, description = "craft 100 Mossy Cobblestone"},
-		["darkage:silt"]={reward = "moreores:mineral_mithril", count=100, description = "craft 300 silt"},
 		["default:stone_with_copper"]={reward = "default:gold_lump", count=50, description = "craft 100 Stone with Copper"},
 		["default:stone_with_mese"]={reward = "default:grass_1", count=25, description = "craft 50 Stone with Mese",
 			on_completed = function(pos,name)
@@ -122,6 +120,32 @@ skyblock.quests[3] = {
 	
 	on_placenode = {
 		["basic_machines:battery_0"]={reward = "basic_machines:grinder", count=1, description = "place battery"},
+		["darkage:silt"]={reward = "moreores:mineral_mithril", count=1, description = "place 1 silt while having 100 silt in inventory",
+			on_completed = function(pos,name) 
+				local player = minetest.get_player_by_name(name);
+				local inv = player:get_inventory();
+				
+				if not inv:contains_item("main",ItemStack("darkage:silt 100")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: you need to have 100 silt blocks in inventory. Try again!")
+					return false 
+				end
+				return true
+			end
+		},
+		
+		["default:mossycobble"]={reward = "moreores:mineral_tin", count=100, description = "place 1 Mossy Cobblestone while having 100 Mossy Cobblestone in inventory",
+			on_completed = function(pos,name) 
+				local player = minetest.get_player_by_name(name);
+				local inv = player:get_inventory();
+				
+				if not inv:contains_item("main",ItemStack("default:mossycobble 100")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: you need to have 100 mossy cobblestone blocks in inventory. Try again!")
+					return false 
+				end
+				return true
+			end
+		},
+		
 		["default:steelblock"]={reward = "default:mese_crystal", count=1, description = "place 1 steelblock while having 4 steelblocks in inventory",
 			on_completed = function(pos,name) 
 				local player = minetest.get_player_by_name(name);
