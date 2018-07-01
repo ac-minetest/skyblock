@@ -1,5 +1,3 @@
- 
-
 skyblock.quests = {}
 
 skyblock.quests[1] = { -- level 1
@@ -43,7 +41,12 @@ skyblock.quests[1] = { -- level 1
 		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get protector as reward.")
 		
 		skyblock.init_level(name,2); -- start level 2
-		skyblock.save_data() --save id_queue data so that this players island is safe even if crash
+		
+		local pdata = skyblock.players[name];
+		local id = pdata.id; local pos = skyblock.get_island_pos(id); local meta = minetest.get_meta(pos);
+		meta:set_string("infotext","ISLAND " .. id .. ": " .. name) -- ITS PLAYERS ISLAND NOW
+		
+		skyblock.save_data(false) --save id_queue data so that this players island is safe even if crash
 	end,
 }
  
@@ -133,7 +136,7 @@ skyblock.quests[3] = {
 			end
 		},
 		
-		["default:mossycobble"]={reward = "moreores:mineral_tin", count=100, description = "place 1 Mossy Cobblestone while having 100 Mossy Cobblestone in inventory",
+		["default:mossycobble"]={reward = "moreores:mineral_tin", count=1, description = "place 1 Mossy Cobblestone while having 100 Mossy Cobblestone in inventory",
 			on_completed = function(pos,name) 
 				local player = minetest.get_player_by_name(name);
 				local inv = player:get_inventory();

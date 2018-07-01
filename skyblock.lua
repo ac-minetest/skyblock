@@ -134,25 +134,26 @@ function save_player_data(name)
 	file:close()
 end
 
-function save_data() -- on shutdown save: all connected players (with level ~=1) data, queue data
+function save_data(is_shutdown) -- on shutdown save free island ids too
 	local file,err = io.open(filepath..'/_SKYBLOCK_', 'wb')
 	if err then return nil end
 	
 	local ids = skyblock.id_queue;
-	for _,player in ipairs(minetest.get_connected_players()) do -- save connected players if their level enough
-		local name = player:get_player_name();
-		local pdata = skyblock.players[name];
-		if pdata.level~=1 then -- save players
-			save_player_data(name)
-		else -- free id
-			ids[#ids+1] = pdata.id
+	if is_shutdown then -- save all player data
+		for _,player in ipairs(minetest.get_connected_players()) do -- save connected players if their level enough
+			local name = player:get_player_name();
+			local pdata = skyblock.players[name];
+			if pdata.level~=1 then -- save players
+				save_player_data(name)
+			else -- player was level 1, make id available again
+				ids[#ids+1] = pdata.id
+			end
 		end
 	end
 	
 	local pdatastring = minetest.serialize({skyblock.max_id,skyblock.id_queue})
 	file:write(pdatastring)
 	file:close()
-	
 end
 skyblock.save_data = save_data;
 
@@ -176,7 +177,7 @@ function load_data(name)
 end
 
 load_data(); -- when server starts
-minetest.register_on_shutdown(save_data) -- when server stops
+minetest.register_on_shutdown(function() save_data(true) end) -- when server shuts down
 
 -- MANAGE player data when connecting/leaving
   

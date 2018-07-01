@@ -78,7 +78,7 @@ function skyblock.spawn_island(pos, name)
 	minetest.set_node({x=pos.x, y=pos.y, z = pos.z}, {name = "default:desert_stonebrick"})
 	minetest.set_node({x=pos.x+1, y=pos.y, z = pos.z}, {name = "default:dirt"})
 	local meta = minetest.get_meta(pos);
-	meta:set_string("infotext","ISLAND " .. (pdata.id or "?") .. ": " .. name)
+	meta:set_string("infotext","FREE ISLAND ")
 end
 
 -- delete island near pos if there is more than 2 blocks placed 5 around spawn pos
