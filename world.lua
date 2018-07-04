@@ -31,6 +31,7 @@ end
 	
 
 local pos2id = function(pos) -- given position in plane return island id
+	if not pos or not pos[1] then return end
 	local g = math.max(math.abs(pos[1]), math.abs(pos[2]));
 	local id = 0; 
 	local h = 2*g+1; local d = (h-1)/2;
@@ -78,7 +79,7 @@ function skyblock.spawn_island(pos, name)
 	minetest.set_node({x=pos.x, y=pos.y, z = pos.z}, {name = "default:desert_stonebrick"})
 	minetest.set_node({x=pos.x+1, y=pos.y, z = pos.z}, {name = "default:dirt"})
 	local meta = minetest.get_meta(pos);
-	meta:set_string("infotext","FREE ISLAND ")
+	meta:set_string("infotext","FREE ISLAND " .. (pos2id(pos) or "?"))
 end
 
 -- delete island near pos if there is more than 2 blocks placed 5 around spawn pos
