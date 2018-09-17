@@ -142,11 +142,13 @@ function save_data(is_shutdown) -- on shutdown save free island ids too
 	if is_shutdown then -- save all player data
 		for _,player in ipairs(minetest.get_connected_players()) do -- save connected players if their level enough
 			local name = player:get_player_name();
-			local pdata = skyblock.players[name];
-			if pdata.level~=1 then -- save players
-				save_player_data(name)
-			else -- player was level 1, make id available again
-				ids[#ids+1] = pdata.id
+			local pdata = skyblock.players[name] or {};
+			if pdata then
+				if pdata.level~=1 then -- save players
+					save_player_data(name)
+				else -- player was level 1, make id available again
+					ids[#ids+1] = pdata.id
+				end
 			end
 		end
 	end
