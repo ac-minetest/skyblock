@@ -161,7 +161,7 @@ skyblock.quests[3] = {
 				return true
 			end
 		},
-		["default:goldblock"]={reward = "default:mese_crystal", count=1, description = "place 1 goldblock while having 4 goldblocks in inventory",
+		["default:goldblock"]={reward = "default:mese_crystal 2", count=1, description = "place 1 goldblock while having 4 goldblocks in inventory",
 			on_completed = function(pos,name) 
 				local player = minetest.get_player_by_name(name);
 				local inv = player:get_inventory();

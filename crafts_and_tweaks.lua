@@ -17,16 +17,6 @@ end
 if minetest.registered_nodes["moreores:mineral_mithril"] then
 	adjust_stone_with_ore("moreores:mineral_mithril","moreores:mithril_lump",1500)
 	adjust_stone_with_ore("moreores:mineral_silver","moreores:silver_lump",30)
-	adjust_stone_with_ore("moreores:mineral_tin","moreores:tin_lump",16)
-		
-	
-	minetest.register_craft({
-		output = 'moreores:mineral_tin 2',
-		recipe = {
-			{'moreores:tin_lump'},
-			{'default:stone'},
-		}
-	})
 	
 	minetest.register_craft({
 		output = 'moreores:mineral_silver 2',
@@ -44,6 +34,9 @@ adjust_stone_with_ore("default:stone_with_gold","default:gold_lump",50)
 adjust_stone_with_ore("default:stone_with_copper","default:copper_lump",16)
 adjust_stone_with_ore("default:stone_with_iron","default:iron_lump",16)
 adjust_stone_with_ore("default:stone_with_coal","default:coal_lump",8)
+adjust_stone_with_ore("default:stone_with_tin","default:tin_lump",16)
+	
+
 
 
 -- DIGGING speeds
@@ -141,6 +134,15 @@ minetest.register_craft({
 		{'default:stone'},
 	}
 })
+
+minetest.register_craft({
+	output = 'default:stone_with_tin 2',
+	recipe = {
+		{'default:tin_lump'},
+		{'default:stone'},
+	}
+})
+
 
 -- stone_with_gold
 minetest.register_craft({
