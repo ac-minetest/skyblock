@@ -1,0 +1,24 @@
+outlet -> change to battery
+
+battery: craft with meseblock and 3 steel and 1 diamond
+  -upgradeable, start with 10 storage units, each upgrade requires 1.25x more mese blocks and adds 10 storage units ( 1 unit = 1 coal lump)??
+  -display will use entity to show battery bar status on side of battery - determined by where player stands when placing it ( only if there is air there)
+  -battery can be refueled using any valid furnace fuel or by power cells/rods - on fuel insert it will instantly convert to energy, if there is enough energy
+  storage ofc
+  -on activation it will power furnace on top of it, just like outlet does now
+  -when digged and put in invetory it should retain its upgrade info
+  
+ movers: instead of looking for locked chest with fuel it will look for nearby battery
+  
+power plant block: costly to make: 8 diamondblocks, battery in center
+  -upgradeable, each diamondblock+lava_bucket  will add ammount of energy cells produced in cycle ( 5 seconds) and increase its internal energy storage capacity
+  initially produces 1 power cell, storage capacity 10, with each level of upgrade it adds 1 power cell, 10 storage capacity
+  when it generates power it will also fill the battery on top of it ( if any), speed of refill equalls speed of power generation, it will put all energy
+  possible in battery until is filled, will make recharge sound - electric discharge like in factorio game?
+  
+  
+power cell: produced by power plant, have caloric value of 1 coal lump
+9 power cells craft 1 power cell block: caloric value of coal block
+9 power cell blocks 1 power rod
+
+machines will check power: if battery not sufficient capacity for operation it wont work ( it should be able to do at least 10 operations with its capacity)
