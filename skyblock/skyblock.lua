@@ -281,6 +281,7 @@ minetest.register_globalstep(
 					t = t or minetest.get_gametime();
 					if pdata and t-pdata.stats.last_login>10 then -- only reset inventory if player online for more than 10s to prevent spawn kills when falling through unloaded island
 						player:get_inventory():set_list("main",{}) -- empty inventory
+						player:get_inventory():set_list("craft",{})
 					end
 					respawn_player(player)
 				end
