@@ -352,9 +352,7 @@ minetest.override_item('default:aspen_sapling', {
 })
 
 
-minetest.override_item('default:cobble', {
-	drop = "default:gravel 2"
-})
+
 
 -- flora spawns on dirt_with_grass
 minetest.register_abm({
@@ -409,24 +407,22 @@ minetest.register_abm({
 	end,
 })
 
+
+minetest.override_item('default:cobble', {
+	drop = "default:gravel 2"
+})
+
+
+
 -- needed for stone generator
 -- gloopblocks: pumice + gravel = 2 gravel
 
 if minetest.get_modpath("gloopblocks") then -- special stone making if gloopblocks mod installed
-
-	minetest.register_craft({
-		output = 'default:gravel',
-		recipe = {
-			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'},
-			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'},
-			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'}
-		}
-	})
 	
 	minetest.register_craft({
 		output = 'default:cobble',
 		recipe = {
-			{'default:gravel','default:gravel','default:gravel'},
+			{'default:gravel','','default:gravel'},
 			{'default:gravel','default:gravel','default:gravel'},
 			{'default:gravel','default:gravel','default:gravel'}
 		}
@@ -445,5 +441,26 @@ if minetest.get_modpath("gloopblocks") then -- special stone making if gloopbloc
 			{'default:gravel','gloopblocks:pumice'},
 		}
 	})
+	
+	minetest.register_craft({
+		output = 'default:gravel',
+		recipe = {
+			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'},
+			{'gloopblocks:pumice','default:dirt','gloopblocks:pumice'},
+			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'},
+		}
+	})
+	
+	
+	
+	-- minetest.override_item('default:gravel', {
+	-- drop = {
+		-- max_items = 1,
+		-- items = {
+			-- {items = {'default:flint'}, rarity = 16},
+			-- {items = {'default:gravel'}}
+		-- }
+	-- }
+	-- })
 
 end

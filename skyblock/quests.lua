@@ -20,7 +20,7 @@ skyblock.quests[1] = { -- level 1
 				return false
 			end
 			minetest.chat_send_player(name,
-			"#SKYBLOCK: if water meets flowing lava it will create pumice. Craft 1 gravel from 9 pumice, then you can mix 1 pumice and 1 gravel to make 2 gravel. Craft 1 cobble from 9 gravel or smelt 1 gravel to make 1 cobble.\n"..
+			"#SKYBLOCK: if water meets flowing lava it will create pumice. Mix 8 pumice and 1 dirt to get 1 gravel, later you can mix 1 pumice and 1 gravel to make 2 gravel. Craft 1 cobble from 8 gravel, later smelt 1 gravel to make 1 cobble.\n"..
 			minetest.colorize("red","IMPORTANT! keep water away from lava source!"))
 			return true
 		end
