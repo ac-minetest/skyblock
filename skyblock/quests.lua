@@ -106,7 +106,7 @@ skyblock.quests[1] = { -- level 1
 		local inv = player:get_inventory();
 		inv:add_item("craft",ItemStack("default:water_source")) 
 		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get another water source as reward. place it diagonally to another water to make infinite water source.")
-		local privs = core.get_player_privs(self.owner); privs.fast = true; 	core.set_player_privs(self.owner, privs); minetest.auth_reload()
+		local privs = core.get_player_privs(name); privs.fast = true; core.set_player_privs(name, privs); minetest.auth_reload()
 		minetest.chat_send_player(name,"#SKYBLOCK: you got fast privs as reward!")
 		skyblock.init_level(name,3); -- start level 3
 	end,
