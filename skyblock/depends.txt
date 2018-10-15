@@ -5,3 +5,4 @@ sfinv?
 craftguide?
 moreores?
 moreblocks?
+gloopblocks?

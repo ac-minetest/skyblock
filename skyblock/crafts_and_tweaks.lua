@@ -408,3 +408,42 @@ minetest.register_abm({
 		minetest.env:remove_node(pos)
 	end,
 })
+
+-- needed for stone generator
+-- gloopblocks: pumice + gravel = 2 gravel
+
+if minetest.get_modpath("gloopblocks") then -- special stone making if gloopblocks mod installed
+
+	minetest.register_craft({
+		output = 'default:gravel',
+		recipe = {
+			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'},
+			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'},
+			{'gloopblocks:pumice','gloopblocks:pumice','gloopblocks:pumice'}
+		}
+	})
+	
+	minetest.register_craft({
+		output = 'default:cobble',
+		recipe = {
+			{'default:gravel','default:gravel','default:gravel'},
+			{'default:gravel','default:gravel','default:gravel'},
+			{'default:gravel','default:gravel','default:gravel'}
+		}
+	})
+		
+	minetest.register_craft({
+			type = 'cooking',
+			output = "default:cobble",
+			recipe = "default:gravel",
+			cooktime = 5
+		})
+
+	minetest.register_craft({
+		output = 'default:gravel 2',
+		recipe = {
+			{'default:gravel','gloopblocks:pumice'},
+		}
+	})
+
+end

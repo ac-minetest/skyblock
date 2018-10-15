@@ -19,7 +19,9 @@ skyblock.quests[1] = { -- level 1
 				minetest.chat_send_player(name,"#SKYBLOCK: you need to have 32 dirt in inventory to complete this quest! Try again.")
 				return false
 			end
-			minetest.chat_send_player(name,"#SKYBLOCK: if water meets flowing lava it will create stone. But keep water away from lava source!")
+			minetest.chat_send_player(name,
+			"#SKYBLOCK: if water meets flowing lava it will create pumice. Craft 1 gravel from 9 pumice, then you can mix 1 pumice and 1 gravel to make 2 gravel. Craft 1 cobble from 9 gravel or smelt 1 gravel to make 1 cobble.\n"..
+			minetest.colorize("red","IMPORTANT! keep water away from lava source!"))
 			return true
 		end
 		},
@@ -84,7 +86,16 @@ skyblock.quests[1] = { -- level 1
 	},
 	
 	on_craft = {
-		["default:stone_with_coal"]={reward = "basic_robot:spawner", count=50, description = "craft 100 stone with coal"},
+		["default:stone_with_coal"]={reward = "basic_robot:spawner", count=50, description = "craft 100 stone with coal",
+			on_completed = function(pos,name) 
+				minetest.chat_send_player(name,"#SKYBLOCK: You can use robot to automate your tasks ( requires programming skills). Or you can use alchemy lab.")
+				local player = minetest.get_player_by_name(name);
+				local inv = player:get_inventory();
+				inv:add_item("craft",ItemStack("alchemy:lab")) 
+				return true
+			end
+		
+		},
 		["default:stone_with_iron"]={reward = "default:jungleleaves 6", count=50, description = "craft 100 stone with iron"},
 	},
 	
