@@ -432,8 +432,25 @@ if minetest.get_modpath("gloopblocks") then -- special stone making if gloopbloc
 			type = 'cooking',
 			output = "default:cobble",
 			recipe = "default:gravel",
-			cooktime = 5
+			cooktime = 1
 		})
+	
+	--adjust cobble->stone cooktime	..
+	
+	minetest.clear_craft({
+		type = "cooking",
+		output = "default:stone",
+		recipe = "default:cobble",
+	})
+	
+	
+	minetest.register_craft({
+		type = "cooking",
+		output = "default:stone",
+		recipe = "default:cobble",
+		cooktime = 4
+	})
+	
 
 	minetest.register_craft({
 		output = 'default:gravel 2',
