@@ -259,6 +259,8 @@ skyblock.quests[3] = {
 	
 	on_completed = function(name) -- what to do when level completed?
 		minetest.chat_send_all("#SKYBLOCK: " .. name .. " completed level 4 !" )
+		local privs = core.get_player_privs(name); privs.puzzle = true; core.set_player_privs(name, privs); minetest.auth_reload()
+		minetest.chat_send_player(name,"#SKYBLOCK: you got puzzle privs as reward! You can make your own robot games now and more.")
 		skyblock.init_level(name,5); -- start level 5
 	end,
 }

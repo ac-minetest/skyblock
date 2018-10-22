@@ -20,4 +20,4 @@ dofile(modpath..'/skyblock.lua') -- handles quest tracking, load/save player dat
 
 
 
-print('[MOD]'.. " SKY BLOCK v2 loaded , version 07/01/2018a.")
+print('[MOD]'.. " SKY BLOCK v2 loaded , version 10/22/2018a.")
