@@ -2143,10 +2143,11 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 				if fields.inv2 then
 					 meta:set_string("inv2",fields.inv2);
 				end
-				
+
+				--notification
 				meta:set_string("infotext", "Mover block. Set up with source coordinates ".. x0 ..","..y0..","..z0.. " -> ".. x1 ..","..y1..","..z1.. " and target coord ".. x2 ..","..y2..",".. z2 .. ". Put charged battery next to it and start it with keypad/mese signal.");
 			
-			else -- MODE
+			else -- MODE 1
 			
 				if fields.mode then
 					meta:set_string("mode",fields.mode);
@@ -2158,6 +2159,9 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 				if meta:get_string("prefer")~=prefer then
 					meta:set_string("prefer",prefer);
 				end
+				
+				--notification
+				meta:set_string("infotext", "Mover block. Set up with source coordinates ".. x0 ..","..y0..","..z0.. " -> ".. x1 ..","..y1..","..z1.. " and target coord ".. x2 ..","..y2..",".. z2 .. ". Put charged battery next to it and start it with keypad/mese signal.");
 			end
 			
 			if meta:get_float("fuel")<0 then meta:set_float("fuel",0) end -- reset block
