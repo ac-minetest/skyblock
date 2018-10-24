@@ -18,6 +18,6 @@ dofile(modpath..'/world.lua') -- set mapgen, spawn island functions, island posi
 dofile(modpath..'/crafts_and_tweaks.lua') -- various crafts and tweaks needed for skyblock
 dofile(modpath..'/skyblock.lua') -- handles quest tracking, load/save player data, island id management
 
-
+dofile(modpath..'/tutorial.lua') -- display hints for new player
 
 print('[MOD]'.. " SKY BLOCK v2 loaded , version 10/22/2018a.")

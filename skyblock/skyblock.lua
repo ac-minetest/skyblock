@@ -266,6 +266,7 @@ local respawn_player = function(player)
 			if not minetest.find_node_near(pos, 5, "default:dirt") then
 				skyblock.spawn_island(pos, name)
 			end
+			skyblock.tutorial.change_text(name,"You are dead!\nYour quests are resetted.\nStart digging dirt again.")
 		end
 		pos.y=pos.y+4; player:setpos(pos) -- teleport player to island
 end

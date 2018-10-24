@@ -3,11 +3,22 @@ skyblock.quests = {}
 skyblock.quests[1] = { -- level 1
 	on_dignode = {
 		["default:dirt"]={reward = "default:leaves 6", count=10, description = "dig 10 dirt"},
-		["default:tree"]={reward = "default:water_source", count=16, description = "dig 16 tree"} 
+		["default:tree"]={reward = "default:water_source", count=16, description = "dig 16 tree",
+			on_completed = function(pos,name) 
+				skyblock.tutorial.change_text(name,"Keep making more composters and more dirt.\nKeep water for later.")
+				return true
+			end
+		
+		} 
 	},
 	
 	on_placenode = {
-		["default:dirt"]={reward = "default:stick 5", count=10, description = "place 10 dirt"} 
+		["default:dirt"]={reward = "default:stick 5", count=10, description = "place 10 dirt",
+			on_completed = function(pos,name) 
+				skyblock.tutorial.change_text(name,"You can make tree sapling now, open craft guide and search\nfor sapling recipe ( right one ).Plant tree, wait 1 minute\nand make more saplings from leaves.")
+				return true
+			end
+		} 
 	},
 	
 	on_craft = {
@@ -22,13 +33,20 @@ skyblock.quests[1] = { -- level 1
 			minetest.chat_send_player(name,
 			"#SKYBLOCK: if water meets flowing lava it will create pumice. Mix 8 pumice and 1 dirt to get 1 gravel, later you can mix 1 pumice and 1 gravel to make 2 gravel. Craft 1 cobble from 8 gravel, later smelt 1 gravel to make 1 cobble.\n"..
 			minetest.colorize("red","IMPORTANT! keep water away from lava source!"))
+			skyblock.tutorial.change_text(name,"Place lava (AWAY FROM WATER!) and make your\nown pumice generator. You can dig pumice with wooden\npick and use it to make stone (search craft guide)")
 			return true
 		end
 		},
-		["default:furnace"]={reward = "default:axe_steel", count=4, description = "craft 4 furnace"},
+		["default:furnace"]={reward = "default:axe_steel", count=4, description = "craft 4 furnace",
+			on_completed = function(pos,name) 
+				skyblock.tutorial.change_text(name,"")
+				return true
+			end
+		},
 		["default:sapling"]={reward = "default:axe_wood", count=5, description = "craft 5 saplings",
 			on_completed = function(pos,name) 
 				minetest.chat_send_player(name,"#SKYBLOCK: you can craft 'composter' from wood planks and use it to make more dirt. Look in craft guide for craft recipe.")
+				skyblock.tutorial.change_text(name,"Use axe to cut tree and get wood.\nFrom wood you can craft composter and use it with leaves\nto make more dirt for your island.")
 				return true
 			end
 		}
