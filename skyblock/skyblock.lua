@@ -69,8 +69,12 @@ skyblock.init_level = function(name,level) -- inits/resets player achievements o
 				return 
 			end
 			minetest.chat_send_all("#SKYBLOCK: " .. name .. " completed '" .. data.description .. "' on level " .. level)
-			--digger:get_inventory():set_stack("craft", 1, ItemStack(data.reward))
-			digger:get_inventory():add_item("craft", ItemStack(data.reward))  -- give reward to player
+			local diginv = digger:get_inventory(); local rewardstack = ItemStack(data.reward)
+			if diginv:room_for_item("craft", rewardstack) then
+				diginv:add_item("craft", rewardstack)  -- give reward to players craft inventory
+			else
+				minetest.add_item(pos,rewardstack) -- drop reward
+			end
 			pdata.completed = pdata.completed + 1 -- one more quest completed
 			if pdata.completed >= pdata.total then skyblock.quests[level].on_completed(name) end -- did we complete level?
 		end
