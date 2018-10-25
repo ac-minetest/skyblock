@@ -35,19 +35,10 @@ local put_dirt = function(pos,node,ttl)
 end
 
 minetest.register_node("compost:wood_barrel", {
-	description = "Make dirt with composting",
+	description = "Empty Wooden barrel - Make dirt by composting",
 	tiles = {"default_wood.png"},
-	drawtype = "nodebox",
-	selection_box = {type = "fixed", fixed = {-0.5,-0.5,-0.5,0.5,0.5,0.5}},
-	
-	node_box = {
-		type = "fixed",
-		fixed = {{-1/2, -1/2, -1/2, 1/2, -3/8, 1/2},
-			{-1/2, -1/2, -1/2, -3/8, 1/2, 1/2},
-			{3/8, -1/2, -1/2, 1/2, 1/2, 1/2},
-			{-1/2, -1/2, -1/2, 1/2, 1/2, -3/8},
-			{-1/2, -1/2, 3/8, 1/2, 1/2, 1/2}},
-	},
+	drawtype = "mesh",
+	mesh = "compost_barrel_empty.obj",
 	paramtype = "light",
 	is_ground_content = false,
 	groups = {choppy = 3,mesecon_effector_on = 1},
@@ -61,19 +52,13 @@ minetest.register_node("compost:wood_barrel", {
 })
 
 minetest.register_node("compost:wood_barrel_1", {
-	description = "Wood Barrel with compost",
-	tiles = {"default_wood.png^compost_compost_1.png", "default_wood.png"},
-	drawtype = "nodebox",
-	
-	node_box = {
-		type = "fixed",
-		fixed = {{-1/2, -1/2, -1/2, 1/2, -3/8, 1/2},
-			{-1/2, -1/2, -1/2, -3/8, 1/2, 1/2},
-			{3/8, -1/2, -1/2, 1/2, 1/2, 1/2},
-			{-1/2, -1/2, -1/2, 1/2, 1/2, -3/8},
-			{-1/2, -1/2, 3/8, 1/2, 1/2, 1/2},
-			{-3/8, -1/2, -3/8, 3/8, 3/8, 3/8}},
+	description = "Wooden Barrel with compost (1)",
+	tiles = {
+		"default_wood.png",
+		"compost_compost.png"
 	},
+	drawtype = "mesh",
+	mesh = "compost_barrel_full.obj",
 	paramtype = "light",
 	is_ground_content = false,
 	groups = {choppy = 3},
@@ -81,18 +66,13 @@ minetest.register_node("compost:wood_barrel_1", {
 })
 
 minetest.register_node("compost:wood_barrel_2", {
-	description = "Wood Barrel with compost",
-	tiles = {"default_wood.png^compost_compost_2.png", "default_wood.png"},
-	drawtype = "nodebox",
-	node_box = {
-		type = "fixed",
-		fixed = {{-1/2, -1/2, -1/2, 1/2, -3/8, 1/2},
-			{-1/2, -1/2, -1/2, -3/8, 1/2, 1/2},
-			{3/8, -1/2, -1/2, 1/2, 1/2, 1/2},
-			{-1/2, -1/2, -1/2, 1/2, 1/2, -3/8},
-			{-1/2, -1/2, 3/8, 1/2, 1/2, 1/2},
-			{-3/8, -1/2, -3/8, 3/8, 3/8, 3/8}},
+	description = "Wooden Barrel with compost (2)",
+	tiles = {
+		"default_wood.png",
+		"default_dirt.png^(compost_compost.png^[opacity:127)"
 	},
+	drawtype = "mesh",
+	mesh = "compost_barrel_full.obj",
 	paramtype = "light",
 	is_ground_content = false,
 	groups = {choppy = 3},
@@ -106,18 +86,13 @@ local get_dirt = function(pos, node,ttl)
 end
 
 minetest.register_node("compost:wood_barrel_3", {
-	description = "Wood Barrel",
-	tiles = {"default_wood.png^compost_compost_3.png", "default_wood.png"},
-	drawtype = "nodebox",
-	node_box = {
-		type = "fixed",
-		fixed = {{-1/2, -1/2, -1/2, 1/2, -3/8, 1/2},
-			{-1/2, -1/2, -1/2, -3/8, 1/2, 1/2},
-			{3/8, -1/2, -1/2, 1/2, 1/2, 1/2},
-			{-1/2, -1/2, -1/2, 1/2, 1/2, -3/8},
-			{-1/2, -1/2, 3/8, 1/2, 1/2, 1/2},
-			{-3/8, -1/2, -3/8, 3/8, 3/8, 3/8}},
+	description = "Wooden Barrel with compost (3, finished)",
+	tiles = {
+		"default_wood.png",
+		"default_dirt.png"
 	},
+	drawtype = "mesh",
+	mesh = "compost_barrel_full.obj",
 	paramtype = "light",
 	is_ground_content = false,
 	groups = {choppy = 3,mesecon_effector_on = 1},
