@@ -190,65 +190,68 @@ minetest.register_on_shutdown(function() save_data(true) end) -- when server shu
  minetest.register_on_joinplayer( -- LOAD data, init
 	function(player)
 		local name = player:get_player_name();
-		load_player_data(name); -- attempt to load previous data
 		local pdata = skyblock.players[name];
-		local level = 1;
-		local id = -1;
-		if not pdata.level then -- init for new player
+		if pdata then return end -- player already exists ingame, nothing to do
+		
+		load_player_data(name); -- attempt to load previous data
+		pdata = skyblock.players[name];
+		
+		if pdata.level then -- player already exists and is initialized
+			minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: welcome back " .. name .. " from island " .. (pdata.id or "?")))
+			return
+		else -- init for new player
 			skyblock.init_level(name,1)
 			pdata = skyblock.players[name];
 			minetest.chat_send_player(name, "#SKYBLOCK: welcome to skyblock. Open inventory and check the quests.")
-		else
-			level = pdata.level
-			id = pdata.id
 		end
-		-- set island, set id for player
-		if level == 1 then -- new player only
-			local ids = skyblock.id_queue;
+
+		-- set island, set id for new player
+		local id = -1;
+		local ids = skyblock.id_queue;
+		
+		if #ids == 0 then -- out of free islands,make new island
+			skyblock.max_id = skyblock.max_id + 1 
+			id = skyblock.max_id;
 			
-			if #ids == 0 then 
-				skyblock.max_id = skyblock.max_id + 1 -- out of free islands,make new island
-				id = skyblock.max_id;
-				
-				if id>=0 then 
-					local pos = skyblock.get_island_pos(id)
-					minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: spawning new island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
-					pdata.id = id
-					skyblock.spawn_island(pos, name)
-					player:setpos({x=pos.x,y=pos.y+4,z=pos.z}) -- teleport player to island
-					
-				else
-					minetest.chat_send_all("#SKYBLOCK ERROR: skyblock.max_id is <0")
-					return
-				end
-			else 
-				id = ids[#ids]; ids[#ids] = nil; -- pop stack, reuse island
+			if id>=0 then 
 				local pos = skyblock.get_island_pos(id)
-				minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: reusing island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
-				pdata.id = id;
+				minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: spawning new island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
+				pdata.id = id
+				skyblock.spawn_island(pos, name)
 				player:setpos({x=pos.x,y=pos.y+4,z=pos.z}) -- teleport player to island
 				
-				minetest.after(5, function() skyblock.delete_island(pos, true);skyblock.spawn_island(pos, name) end) -- check for trash and delete it
+			else
+				minetest.chat_send_all("#SKYBLOCK ERROR: skyblock.max_id is <0")
+				return
 			end
-		else
-			minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: welcome back " .. name .. " from island " .. id))
+		else 
+			id = ids[#ids]; ids[#ids] = nil; -- pop stack, reuse island
+			local pos = skyblock.get_island_pos(id)
+			minetest.chat_send_all(minetest.colorize("LawnGreen","#SKYBLOCK: reusing island " .. id .. " for " .. name .. " at " .. pos.x .. " " .. pos.y .. " " .. pos.z ))
+			pdata.id = id;
+			player:setpos({x=pos.x,y=pos.y+4,z=pos.z}) -- teleport player to island
+			
+			minetest.after(5, function() skyblock.delete_island(pos, true);skyblock.spawn_island(pos, name) end) -- check for trash and delete it
 		end
+
 	end
 )
+
+--when level 1 player leave, put him on temporary list: [name] = {id, time}; 
+--every 1 minute check the temporary list and really remove player (if not online again) and free island id
+skyblock.temporary = {};
 
 minetest.register_on_leaveplayer(
 	function(player, timed_out)
 		local name = player:get_player_name();
 		local pdata = skyblock.players[name];
 		
-		if pdata.level == 1 then -- new players id is recycled, player must be level >=2 to keep his island
-			local ids = skyblock.id_queue;
-			ids[#ids+1] = pdata.id;
+		if pdata.level == 1 then 
+			skyblock.temporary[name]={pdata.id, minetest.get_gametime()};
 		else -- save data if player level >= 2!
 			save_player_data(name)
+			skyblock.players[name]=nil
 		end
-		
-		skyblock.players[name]=nil
 	end
 )
 
@@ -266,24 +269,32 @@ local respawn_player = function(player)
 			if not minetest.find_node_near(pos, 5, "default:dirt") then
 				skyblock.spawn_island(pos, name)
 			end
-			skyblock.tutorial.change_text(name,"You are dead!\nYour quests are resetted.\nStart digging dirt again.")
+			skyblock.tutorial.change_text(name,"You died!\nYour quests have been reset.\nStart digging dirt again.")
 		end
 		pos.y=pos.y+4; player:setpos(pos) -- teleport player to island
 end
 
+minetest.register_on_respawnplayer(function(player)
+	respawn_player(player)
+	return true -- disable regular player placement
+end)
+
+
 local timer = 0;
+local temptimer = 0;
 minetest.register_globalstep(
 	function(dtime)
 		timer = timer + dtime;
-		local t;
+		
 		if timer > 1 then
 			timer = 0
+			local t = minetest.get_gametime();
+			
 			local bottom = skyblock.bottom;
 			for _,player in ipairs(minetest.get_connected_players()) do -- MINETEST BUG: why huge lag if 'pairs' here?
 				if player:getpos().y < bottom then 
 					local name = player:get_player_name();
 					local pdata = skyblock.players[name];
-					t = t or minetest.get_gametime();
 					if pdata and t-pdata.stats.last_login>10 then -- only reset inventory if player online for more than 10s to prevent spawn kills when falling through unloaded island
 						player:get_inventory():set_list("main",{}) -- empty inventory
 						player:get_inventory():set_list("craft",{})
@@ -291,6 +302,25 @@ minetest.register_globalstep(
 					respawn_player(player)
 				end
 			end
+			
+			temptimer = temptimer + 1 -- remove all level 1 players who are offline for more than 1 minute
+			if temptimer>60 then
+				temptimer = 0;
+				for name,tdata in pairs(skyblock.temporary) do -- temporary list: [name] = {id, time}
+					if t-tdata[2]>90 then -- more than 90s passed, if player not online clear his data and free island
+						local player = minetest.get_player_by_name(name);
+						if not player then
+							local ids = skyblock.id_queue;ids[#ids+1] = tdata[1]; -- free island,new players id is recycled, player must be level >=2 to keep his island
+							skyblock.players[name]=nil -- clear quest data
+							minetest.chat_send_all("#SKYBLOCK: " .. name .. "'s island recycled.")
+						end
+						skyblock.temporary[name] = nil; -- possible problem: does this corrupt pairs iterator?
+					end
+				end
+			end
+		
+		
+		
 		end
 	end
 )
