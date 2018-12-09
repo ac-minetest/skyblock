@@ -1,4 +1,3 @@
---helping chat bot
 if not init then 
 	init = true; self.listen(1);
 	self.spam(1); self.label("help bot")
@@ -10,15 +9,19 @@ if not init then
 			{"play",1},{"robot", 6},{"stone",4},{"tree",3},{"wood",3},{"lava",5},{"cobble",4},{"dirt",10},
 			{"do i get",1},{"do i make",1}, {"to get",1}
 		},
+		{"i need",
+			{"wood",3}
+		},
 
-		{"hello",2},
+		{"hello",2}, -- words matched must appear at beginning
 		{"hi",2},
 		{"back",7}, 
-		{" hard", 9},{" died", 9},
-		{" die",8},	{" dead",8},
-		{"rnd",11},
-		{"bye",12},
-		{"!!",9},
+		{" hard",{"",9}}, -- word matched can appear anywhere
+		{" died", {"",9}},
+		{" die",{"",8}}, {" dead",{"",8}},
+		{"rnd",{"",11}},
+		{"bye",{"",12}},
+		{"!!",{"",9}},
 	}
 	answers = {
 		"%s open inventory, click 'Quests' and do them to get more stuff", --1
@@ -44,14 +47,15 @@ if msg then
 		local k = string.find(msg,keywords[i][1])
 		if k then 
 			if type(keywords[i][2])~="table" then
-				if k == 1 then sel = keywords[i][2] end
-				break; 
-			end
-			for j=2,#keywords[i] do
-				if string.find(msg,keywords[i][j][1]) then 
-					sel =  keywords[i][j][2]; break;
+				if k == 1 then sel = keywords[i][2] break end
+			else
+				for j=2,#keywords[i] do
+					if string.find(msg,keywords[i][j][1]) then 
+						sel =  keywords[i][j][2]; break;
+					end
 				end
 			end
+			
 		end
 	end
 	
