@@ -25,7 +25,7 @@ basic_robot.bad_inventory_blocks = { -- disallow taking from these nodes invento
 
 basic_robot.http_api = minetest.request_http_api(); 
 
-basic_robot.version = "2018/12/24a";
+basic_robot.version = "2019/01/13a";
 
 basic_robot.gui = {}; local robogui = basic_robot.gui -- gui management
 basic_robot.data = {}; -- stores all robot related data
@@ -86,8 +86,8 @@ function getSandboxEnv (name)
 			return commands.pickup(r, name);
 		end,
 		
-		craft = function(item, idx,mode)
-			return commands.craft(item, mode, idx, name)
+		craft = function(item, idx,mode, amount)
+			return commands.craft(item, mode, idx, amount, name)
 		end,
 		
 		pause = function() -- pause coroutine
@@ -576,7 +576,7 @@ end
 
 check_code = function(code)
   --"while ", "for ", "do ","goto ",  
-  local bad_code = {"repeat", "until", "_ccounter", "_G", "while%(", "while{", "pcall","%.%."} --,"\\\"", "%[=*%[","--[["}
+  local bad_code = {"repeat", "until", "_c_", "_G", "while%(", "while{", "pcall","%.%."} --,"\\\"", "%[=*%[","--[["}
   for _, v in pairs(bad_code) do
     if string.find(code, v) then
       return v .. " is not allowed!";
@@ -808,7 +808,7 @@ end
 local function setupid(owner)
 	local privs = minetest.get_player_privs(owner); if not privs then return end
 	local maxid = basic_robot.entry_count;
-	if privs.robot then maxid = basic_robot.advanced_count end -- max id's per user
+	if privs.robot or privs.puzzle then maxid = basic_robot.advanced_count end -- max id's per user
 	basic_robot.ids[owner] = {id = 1, maxid =  maxid}; --active id for remove control
 end
 
