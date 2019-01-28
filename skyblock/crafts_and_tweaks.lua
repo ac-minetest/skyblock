@@ -117,6 +117,7 @@ minetest.register_craft({
 	output = 'default:stone_with_coal 2',
 	recipe = {
 		{'default:coal_lump'},
+		{'default:wood'},
 		{'default:stone'},
 	}
 })
@@ -125,24 +126,46 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stone_with_iron 2',
 	recipe = {
-		{'default:iron_lump'},
+		{'skyblock:iron_extractor'},
 		{'default:stone'},
 	}
 })
+
+minetest.register_craft({
+	output = 'skyblock:iron_extractor',
+	recipe = {
+		{'default:leaves','default:leaves','default:iron_lump'},
+	}
+})
+
 
 -- stone_with_copper
 minetest.register_craft({
 	output = 'default:stone_with_copper 2',
 	recipe = {
-		{'default:copper_lump'},
+		{'skyblock:copper_extractor'},
 		{'default:stone'},
+	}
+})
+
+minetest.register_craft({
+	output = 'skyblock:copper_extractor',
+	recipe = {
+		{'default:papyrus','default:papyrus','default:copper_lump'},
+	}
+})
+
+minetest.register_craft({
+	output = 'skyblock:tin_extractor',
+	recipe = {
+		{'farming:cocoa_beans','farming:cocoa_beans','default:tin_lump'},
 	}
 })
 
 minetest.register_craft({
 	output = 'default:stone_with_tin 2',
 	recipe = {
-		{'default:tin_lump'},
+		{'skyblock:tin_extractor'},
 		{'default:stone'},
 	}
 })
@@ -152,8 +175,16 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stone_with_gold 2',
 	recipe = {
-		{'default:gold_lump'},
+		{'skyblock:gold_extractor'},
 		{'default:stone'},
+	}
+})
+
+
+minetest.register_craft({
+	output = 'skyblock:gold_extractor',
+	recipe = {
+		{'skyblock:tin_extractor','skyblock:copper_extractor','default:gold_lump'},
 	}
 })
 
@@ -161,20 +192,63 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stone_with_mese 2',
 	recipe = {
-		{'default:mese_crystal'},
+		{'skyblock:mese_extractor'},
 		{'default:stone'},
 	}
 })
+
+
+minetest.register_craft({
+	output = 'skyblock:mese_extractor',
+	recipe = {
+		{'farming:rhubarb','farming:rhubarb','default:mese_crystal'},
+	}
+})
+
 
 
 -- stone_with_diamond
 minetest.register_craft({
 	output = 'default:stone_with_diamond 2',
 	recipe = {
-		{'default:diamond'},
+		{'skyblock:diamond_extractor'},
 		{'default:stone'},
 	}
 })
+
+minetest.register_craft({
+	output = 'skyblock:diamond_extractor',
+	recipe = {
+		{'farming:wheat','farming:cotton','default:diamond'},
+	}
+})
+
+
+-- ORE EXTRACTORS
+
+
+local function register_extractor(name,R,G,B)
+	
+	if not R then R = "FF" end 
+	if not G then G = "FF" end 
+	if not B then B = "FF" end 
+
+	minetest.register_craftitem("skyblock:"..name.."_extractor", {
+		description = "chemical used in extraction of " .. name ,
+		inventory_image = "ore_extractor.png^[colorize:#"..R..G..B..":180",
+	})
+end
+
+register_extractor("iron","99","99","99")
+register_extractor("copper","C8","80","0D")
+register_extractor("tin","C8","9F","9F")
+register_extractor("gold","FF","FF","00")
+register_extractor("mese","CC","CC","00")
+register_extractor("diamond","00","EE","FF")
+register_extractor("mithril","00","00","FF")
+
+
+-- VARIOUS SKYBLOCK CRAFTS
 
 
 -- locked_chest from chest
