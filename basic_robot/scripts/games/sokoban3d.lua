@@ -20,7 +20,7 @@ if not init then
   "SOKOBAN 3D. RULES:\n1. pushable blocks: white,gray,yellow. you can not push block if another block is on top of it,\n2. elevator block: yellow - can push other blocks on top of it,"..
   "\n3. if block falls it breaks, unless it falls less than 1 deep onto green block\n"..
   "4. if you push block into blue it dissapears\n"..
-  "5. you can only push block by standing in front of it, not too low below it or too high above it\n"..
+  "5. you can only push block by standing close in front of it, not too low below it or too high above it\n"..
   "LEVEL 1: push white block on top of red block")
   
   pushables = {[1] = true,[2] = true,[6] = true} -- button types: white,gray, yellow

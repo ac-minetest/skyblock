@@ -171,6 +171,7 @@ if not init then
 		local res = {}; -- list of boxes
 		
 		
+		local air_id = xxx
 		for x=1,dx do 
 			boxdata[x] = {} 
 			for y = 1,dy do

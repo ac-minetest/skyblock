@@ -110,7 +110,7 @@ end
 
 minetest.register_abm({ -- very slowly create energy
 	nodenames = {"alchemy:lab"},
-	neighbors = {""},
+	neighbors = {},
 	interval = 30,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)

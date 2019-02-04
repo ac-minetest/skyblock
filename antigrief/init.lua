@@ -30,36 +30,6 @@ function prevent_place_above(name)
 	local old_after_place_node = minetest.registered_nodes[name];--.after_place_node;
 	--after_place_node = func(pos, placer, itemstack, pointed_thing)
 	
-	if old_after_place_node then
-
-		old_after_place_node=old_after_place_node.after_place_node
-		
-		local table = minetest.registered_nodes[name];
-		local table2 = {}
-		for i,v in pairs(table) do
-			table2[i] = v
-		end
-		
-		table2.after_place_node=function(pos, placer, itemstack, pointed_thing)
-			--after_place_node = func(pos, placer, itemstack, pointed_thing)
-			if pos.y>4 then
-				local pname = placer:get_player_name();
-				local privs = antigrief[pname];
-				if privs == nil then privs = minetest.get_player_privs(pname).kick; antigrief[pname] = privs end
-				if not privs then
-					minetest.chat_send_player(pname,"ANTIGRIEF: place liquids below height 4")
-					minetest.log("action","ANTI GRIEF " .. pname .. " tried to place " .. name .. " at " .. minetest.pos_to_string(pos));
-					minetest.set_node(pos, {name = "air"});
-					return itemstack
-				end
-			end
-		end
-		
-		
-		minetest.register_node(":"..name, table2)
-		return;
-	end 
-	
 	if old_on_place and old_on_place.on_place then
 		old_on_place=old_on_place.on_place;
 		minetest.registered_craftitems[name].on_place=function(itemstack, placer, pointed_thing)
@@ -78,6 +48,37 @@ function prevent_place_above(name)
 		end
 	return;
 	end
+
+	if old_after_place_node then
+
+		old_after_place_node=old_after_place_node.after_place_node
+		
+		local table = minetest.registered_nodes[name];
+		local table2 = {}
+		for i,v in pairs(table) do
+			table2[i] = v
+		end
+		
+		table2.after_place_node=function(pos, placer, itemstack, pointed_thing)
+			--after_place_node = func(pos, placer, itemstack, pointed_thing)
+			local pos = pointed_thing.above
+			if pos.y>4 then
+				local pname = placer:get_player_name();
+				local privs = antigrief[pname];
+				if privs == nil then privs = minetest.get_player_privs(pname).kick; antigrief[pname] = privs end
+				if not privs then
+					minetest.chat_send_player(pname,"ANTIGRIEF: place liquids below height 4")
+					minetest.log("action","ANTI GRIEF " .. pname .. " tried to place " .. name .. " at " .. minetest.pos_to_string(pos));
+					minetest.set_node(pos, {name = "air"});
+					return itemstack
+				end
+			end
+		end
+		
+		
+		minetest.register_node(":"..name, table2)
+		return;
+	end 
 	
 		
 	return;

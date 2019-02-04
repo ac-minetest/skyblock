@@ -217,29 +217,6 @@ function getSandboxEnv (name)
 				return commands.display_text(obj,text,linesize,size)
 			end,
 			
-			sound = function(sample,volume, pos)
-				if pos then
-					return minetest.sound_play( sample,
-					{
-						pos = pos,
-						gain = volume or 1, 
-						max_hear_distance = 32, -- default, uses an euclidean metric
-					})
-				end
-				
-				local obj = basic_robot.data[name].obj;
-				return minetest.sound_play( sample,
-				{
-					object = obj,
-					gain = volume or 1, 
-					max_hear_distance = 32, -- default, uses an euclidean metric
-				})
-			end,
-			
-			sound_stop = function(handle)
-				minetest.sound_stop(handle)
-			end,
-			
 		},
 
 		machine = {-- adds technic like functionality to robots: power generation, smelting, grinding, compressing
@@ -478,7 +455,9 @@ function getSandboxEnv (name)
 			
 	if authlevel>=1 then -- robot privs
 	
-		
+		env.self.sound = minetest.sound_play
+		env.self.sound_stop = minetest.sound_stop
+	
 		env.table = {
 			concat = table.concat,
 			insert = table.insert,

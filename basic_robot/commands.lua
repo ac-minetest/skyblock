@@ -136,12 +136,12 @@ basic_robot.commands.dig = function(name,dir)
 	
 	--require energy to dig
 	if basic_robot.dig_require_energy then
-		local digcost = basic_robot.digcosts[nodename];
+		local digcost = basic_robot.digcosts[nodename] or 1/(5*25); -- default 1/5th of stone dig
 		if digcost then
 			local data = basic_robot.data[name];
 			local energy = (data.menergy or 0) - digcost;
 			if energy<0 then 
-				error("need " .. digcost .. " energy to dig " .. nodename .. ". Use machine.generate(...) to get some energy."); 
+				error("need " .. digcost .. " energy to dig " .. nodename .. ". Use machine.generate to get some energy."); 
 			end
 			data.menergy = energy;
 		end
@@ -866,30 +866,26 @@ basic_robot.technic = { -- data cache
 		["default:cobble"] = {1,"default:gravel",1},
 		["default:gravel"] = {0.5,"default:dirt",1},
 		["default:dirt"] = {0.5,"default:clay_lump 4",1},
-		["es:aikerum_crystal"] ={16,"es:aikerum_dust 2",1}, -- added for es mod
-		["es:ruby_crystal"] = {16,"es:ruby_dust 2",1},
-		["es:emerald_crystal"] = {16,"es:emerald_dust 2",1},
-		["es:purpellium_lump"] = {16,"es:purpellium_dust 2",1},
 		["default:obsidian_shard"] = {199,"default:lava_source",1},
 		["gloopblocks:basalt"] = {1, "default:cobble",1}, -- enable coble farms with gloopblocks mod
 		["default:ice"] = {1, "default:snow 4",1},
 		["darkage:silt_lump"]={1,"darkage:chalk_powder",1},
-		["default:diamond"] = {16, "basic_machines:diamond_dust_33 2", 1},
+		["default:diamond"] = {16, "basic_machines:diamond_dust_00 2", 1},
 		["default:ice"] = {1, "default:snow", 1},
-		["moreores:tin_lump"] = {4,"basic_machines:tin_dust_33 2",1},
+		["moreores:tin_lump"] = {4,"basic_machines:tin_dust_00 2",1},
 		["default:obsidian_shard"] = {199, "default:lava_source",1},
-		["default:mese_crystal"] = {8, "basic_machines:mese_dust_33 2",1},
+		["default:mese_crystal"] = {8, "basic_machines:mese_dust_00 2",1},
 		["moreores:mithril_ingot"] = {16, "basic_machines:mithril_dust_33 2",1},
 		["moreores:silver_ingot"] = {5, "basic_machines:silver_dust_33 2",1},
-		["moreores:tin_ingot"] = {4,"basic_machines:tin_dust_33 2",1},
+		["moreores:tin_ingot"] = {4,"basic_machines:tin_dust_00 2",1},
 		["moreores:mithril_lump"] = {16, "basic_machines:mithril_dust_33 2",1},
-		["default:steel_ingot"] = {4, "basic_machines:iron_dust_33 2",1},
+		["default:steel_ingot"] = {4, "basic_machines:iron_dust_00 2",1},
 		["moreores:silver_lump"] = {5, "basic_machines:silver_dust_33 2",1},
-		["default:gold_ingot"] = {6, "basic_machines:gold_dust_33 2", 1},
-		["default:copper_ingot"] = {4, "basic_machines:copper_dust_33 2",1},
-		["default:gold_lump"] = {6, "basic_machines:gold_dust_33 2", 1},
-		["default:iron_lump"] = {4, "basic_machines:iron_dust_33 2",1},
-		["default:copper_lump"] = {4, "basic_machines:copper_dust_33 2",1},
+		["default:gold_ingot"] = {6, "basic_machines:gold_dust_00 2", 1},
+		["default:copper_ingot"] = {4, "basic_machines:copper_dust_00 2",1},
+		["default:gold_lump"] = {6, "basic_machines:gold_dust_00 2", 1},
+		["default:iron_lump"] = {4, "basic_machines:iron_dust_00 2",1},
+		["default:copper_lump"] = {4, "basic_machines:copper_dust_00 2",1},
 	},
 	
 	compressor_recipes = {  --[in] ={fuel cost, out, quantity of material required for processing}

@@ -126,15 +126,8 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stone_with_iron 2',
 	recipe = {
-		{'skyblock:iron_extractor'},
+		{'basic_machines:iron_extractor'},
 		{'default:stone'},
-	}
-})
-
-minetest.register_craft({
-	output = 'skyblock:iron_extractor',
-	recipe = {
-		{'default:leaves','default:leaves','default:iron_lump'},
 	}
 })
 
@@ -143,29 +136,16 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stone_with_copper 2',
 	recipe = {
-		{'skyblock:copper_extractor'},
+		{'basic_machines:copper_extractor'},
 		{'default:stone'},
 	}
 })
 
-minetest.register_craft({
-	output = 'skyblock:copper_extractor',
-	recipe = {
-		{'default:papyrus','default:papyrus','default:copper_lump'},
-	}
-})
-
-minetest.register_craft({
-	output = 'skyblock:tin_extractor',
-	recipe = {
-		{'farming:cocoa_beans','farming:cocoa_beans','default:tin_lump'},
-	}
-})
 
 minetest.register_craft({
 	output = 'default:stone_with_tin 2',
 	recipe = {
-		{'skyblock:tin_extractor'},
+		{'basic_machines:tin_extractor'},
 		{'default:stone'},
 	}
 })
@@ -175,33 +155,18 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stone_with_gold 2',
 	recipe = {
-		{'skyblock:gold_extractor'},
+		{'basic_machines:gold_extractor'},
 		{'default:stone'},
 	}
 })
 
-
-minetest.register_craft({
-	output = 'skyblock:gold_extractor',
-	recipe = {
-		{'skyblock:tin_extractor','skyblock:copper_extractor','default:gold_lump'},
-	}
-})
 
 -- stone_with_mese
 minetest.register_craft({
 	output = 'default:stone_with_mese 2',
 	recipe = {
-		{'skyblock:mese_extractor'},
+		{'basic_machines:mese_extractor'},
 		{'default:stone'},
-	}
-})
-
-
-minetest.register_craft({
-	output = 'skyblock:mese_extractor',
-	recipe = {
-		{'farming:rhubarb','farming:rhubarb','default:mese_crystal'},
 	}
 })
 
@@ -211,42 +176,46 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stone_with_diamond 2',
 	recipe = {
-		{'skyblock:diamond_extractor'},
+		{'basic_machines:diamond_extractor'},
 		{'default:stone'},
 	}
 })
 
+
 minetest.register_craft({
-	output = 'skyblock:diamond_extractor',
+	output = 'basic_machines:iron_extractor',
 	recipe = {
-		{'farming:wheat','farming:cotton','default:diamond'},
+		{'default:leaves','default:leaves','default:iron_lump'},
 	}
 })
 
+minetest.register_craft({
+	output = 'basic_machines:copper_extractor',
+	recipe = {
+		{'default:papyrus','default:papyrus','default:copper_lump'},
+	}
+})
 
--- ORE EXTRACTORS
+minetest.register_craft({
+	output = 'basic_machines:tin_extractor',
+	recipe = {
+		{'farming:cocoa_beans','farming:cocoa_beans','default:tin_lump'},
+	}
+})
 
+minetest.register_craft({
+	output = 'basic_machines:gold_extractor',
+	recipe = {
+		{'basic_machines:tin_extractor','basic_machines:copper_extractor','default:gold_lump'},
+	}
+})
 
-local function register_extractor(name,R,G,B)
-	
-	if not R then R = "FF" end 
-	if not G then G = "FF" end 
-	if not B then B = "FF" end 
-
-	minetest.register_craftitem("skyblock:"..name.."_extractor", {
-		description = "chemical used in extraction of " .. name ,
-		inventory_image = "ore_extractor.png^[colorize:#"..R..G..B..":180",
-	})
-end
-
-register_extractor("iron","99","99","99")
-register_extractor("copper","C8","80","0D")
-register_extractor("tin","C8","9F","9F")
-register_extractor("gold","FF","FF","00")
-register_extractor("mese","CC","CC","00")
-register_extractor("diamond","00","EE","FF")
-register_extractor("mithril","00","00","FF")
-
+minetest.register_craft({
+	output = 'basic_machines:mese_extractor',
+	recipe = {
+		{'farming:rhubarb','farming:rhubarb','default:mese_crystal'},
+	}
+})
 
 -- VARIOUS SKYBLOCK CRAFTS
 
