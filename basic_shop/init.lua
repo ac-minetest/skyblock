@@ -247,6 +247,7 @@ end
 
 minetest.register_on_player_receive_fields(
 	function(player, formname, fields)
+		if formname~="basic_shop" then return end
 		local name = player:get_player_name()
 		if not basic_shop.guidata[name] then init_guidata(name) end
 		
