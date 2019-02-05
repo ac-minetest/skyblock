@@ -220,13 +220,13 @@ skyblock.quests[3] = {
 		["basic_machines:clockgen"]={reward = "farming:blueberries", count=1, description = "place clock generator"},
 		["basic_machines:autocrafter"]={reward = "farming:beans", count=1, description = "place autocrafter"},
 		["basic_machines:enviro"]={reward = "farming:tomato", count=1, description = "place enviroment block"},
-		["default:furnace"]={reward = "", count=1, description = "place furnace on top of battery_0 with 4000 diamondblocks",
+		["default:furnace"]={reward = "", count=1, description = "place furnace on top of battery_0 with 3168 diamondblocks",
 		on_completed = function(pos,name) 
 				pos.y=pos.y-1;
 				if minetest.get_node(pos).name ~= "basic_machines:battery_0" then return false end
 				local inv = minetest.get_meta(pos):get_inventory();
-				if not inv:contains_item("upgrade",ItemStack("default:diamondblock 4000")) then
-					minetest.chat_send_player(name,"#SKYBLOCK: battery needs to have 4000 diamondblocks upgrade!")
+				if not inv:contains_item("upgrade",ItemStack("default:diamondblock 3168")) then
+					minetest.chat_send_player(name,"#SKYBLOCK: battery needs to have 3168 diamondblocks upgrade!")
 					return false 
 				end
 				return true
