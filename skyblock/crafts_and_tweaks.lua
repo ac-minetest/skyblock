@@ -217,6 +217,13 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	output = 'basic_machines:diamond_extractor',
+	recipe = {
+		{'farming:wheat','farming:cotton','default:diamond'},
+	}
+})
+
 -- VARIOUS SKYBLOCK CRAFTS
 
 

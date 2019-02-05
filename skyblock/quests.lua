@@ -2,7 +2,7 @@ skyblock.quests = {}
 
 skyblock.quests[1] = { -- level 1
 	on_dignode = {
-		["default:dirt"]={reward = "default:leaves 6", count=10, description = "dig 10 dirt"},
+		["default:dirt"]={reward = "default:leaves 6", count=1, description = "dig 1 dirt"},
 		["default:tree"]={reward = "default:water_source", count=16, description = "dig 16 tree",
 			on_completed = function(pos,name) 
 				skyblock.tutorial.change_text(name,"Keep making more composters and more dirt.\nKeep water for later.")
@@ -13,7 +13,7 @@ skyblock.quests[1] = { -- level 1
 	},
 	
 	on_placenode = {
-		["default:dirt"]={reward = "default:stick 5", count=10, description = "place 10 dirt",
+		["default:dirt"]={reward = "default:stick 5", count=1, description = "place 1 dirt",
 			on_completed = function(pos,name) 
 				skyblock.tutorial.change_text(name,"You can make tree sapling now, open craft guide and search\nfor sapling recipe ( right one ).Plant tree, wait 1 minute\nand make more saplings from leaves.")
 				return true
