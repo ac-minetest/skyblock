@@ -391,7 +391,7 @@ local restore_plant = function(pos)
 	local dmeta = minetest.get_meta(pos);
 	local node_name = dmeta:get_string("plant"); if node_name == "" then node_name = "air" end
 	local t = minetest.get_gametime()-dmeta:get_int("t");
-	if t> 60 then node_name = "air" end -- 1 minute to fix weed or else!
+	if t> 300 then node_name = "air" end -- 5 minute to fix weed or else!
 	minetest.swap_node(pos,{name = node_name}) -- restore node
 end
 
