@@ -655,6 +655,7 @@ function farming.place_seed(itemstack, placer, pointed_thing, plantname)
 	or under.name~='compost:wood_barrel_3'
 	-- avoid multiple seed placement bug
 	or minetest.get_item_group(above.name, "plant") ~= 0 then
+		minetest.chat_send_player(placer:get_player_name(),"#FARMING: only place seeds on top of matured composter.")
 		return
 	end
 

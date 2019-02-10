@@ -30,8 +30,24 @@ local put_dirt = function(pos,node,ttl)
 	local nodename = minetest.get_node(pos).name
 	if compost.can_compost(nodename) then
 		minetest.set_node(pos, {name = "air"}); pos.y=pos.y-1;
-		minetest.set_node(pos, {name = "compost:wood_barrel_1"})
+		minetest.swap_node(pos, {name = "compost:wood_barrel_1"})
 	end
+end
+
+
+update_composter_formspec = function(pos)
+	local meta = minetest.get_meta(pos);
+	local inv = meta:get_inventory();
+	inv:set_size("nutrient",4);
+	local list_name = "nodemeta:"..pos.x..','..pos.y..','..pos.z 
+
+	local form  = 
+		"size[8,6]"..			
+		"list[" .. list_name .. ";nutrient;0,0;2,2;]"..
+		"list[current_player;main;0,2;8,4;]"..
+		"listring[context;nutrient]"..
+		"listring[current_player;main]"
+	meta:set_string("formspec", form);
 end
 
 minetest.register_node("compost:wood_barrel", {
@@ -45,6 +61,7 @@ minetest.register_node("compost:wood_barrel", {
 	sounds =  default.node_sound_wood_defaults(),
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos); meta:set_string("infotext","place leaves on top of it and punch/activate to start composting")
+		update_composter_formspec(pos)
 	end,
 
 	on_punch = put_dirt,
@@ -84,7 +101,7 @@ local get_dirt = function(pos, node,ttl)
 	if minetest.get_node(pos).name ~= "air" then return end
 	pos.y = pos.y-1
 	
-	minetest.set_node(pos, {name = "compost:wood_barrel"})
+	minetest.swap_node(pos, {name = "compost:wood_barrel"})
 	pos.y = pos.y+1;
 	minetest.set_node(pos, {name = "default:dirt"})
 end
@@ -104,17 +121,7 @@ minetest.register_node("compost:wood_barrel_3", {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos);
 		meta:set_string("infotext","composter ready. Punch to get dirt or use it for farming - right click to insert nutrients.")
-		local inv = meta:get_inventory();
-		inv:set_size("nutrient",4);
-		local list_name = "nodemeta:"..pos.x..','..pos.y..','..pos.z 
-	
-		local form  = 
-			"size[8,6]"..			
-			"list[" .. list_name .. ";nutrient;0,0;2,2;]"..
-			"list[current_player;main;0,2;8,4;]"..
-			"listring[context;nutrient]"..
-			"listring[current_player;main]"
-		meta:set_string("formspec", form);
+		update_composter_formspec(pos)
 	end,
 	
 	on_punch = get_dirt,
@@ -126,7 +133,7 @@ minetest.register_abm({
 	interval = 40,
 	chance = 5,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		minetest.set_node(pos, {name = "compost:wood_barrel_2"})
+		minetest.swap_node(pos, {name = "compost:wood_barrel_2"})
 	end,
 })
 
@@ -135,7 +142,7 @@ minetest.register_abm({
 	interval = 40,
 	chance = 5,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		minetest.set_node(pos, {name = "compost:wood_barrel_3"})
+		minetest.swap_node(pos, {name = "compost:wood_barrel_3"})
 	end,
 })
 
