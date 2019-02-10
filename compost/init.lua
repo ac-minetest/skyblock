@@ -80,6 +80,10 @@ minetest.register_node("compost:wood_barrel_2", {
 })
 
 local get_dirt = function(pos, node,ttl)
+	pos.y = pos.y+1
+	if minetest.get_node(pos).name ~= "air" then return end
+	pos.y = pos.y-1
+	
 	minetest.set_node(pos, {name = "compost:wood_barrel"})
 	pos.y = pos.y+1;
 	minetest.set_node(pos, {name = "default:dirt"})
@@ -98,7 +102,19 @@ minetest.register_node("compost:wood_barrel_3", {
 	groups = {choppy = 3,mesecon_effector_on = 1},
 	sounds =  default.node_sound_wood_defaults(),
 	on_construct = function(pos)
-		local meta = minetest.get_meta(pos); meta:set_string("infotext","compost ready. punch to get dirt")
+		local meta = minetest.get_meta(pos);
+		meta:set_string("infotext","composter ready. Punch to get dirt or use it for farming - right click to insert nutrients.")
+		local inv = meta:get_inventory();
+		inv:set_size("nutrient",4);
+		local list_name = "nodemeta:"..pos.x..','..pos.y..','..pos.z 
+	
+		local form  = 
+			"size[8,6]"..			
+			"list[" .. list_name .. ";nutrient;0,0;2,2;]"..
+			"list[current_player;main;0,2;8,4;]"..
+			"listring[context;nutrient]"..
+			"listring[current_player;main]"
+		meta:set_string("formspec", form);
 	end,
 	
 	on_punch = get_dirt,

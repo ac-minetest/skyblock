@@ -1563,6 +1563,7 @@ minetest.register_on_player_receive_fields(
 						data.text = text or ""
 						data.title = fields.title or ""
 						data.text_len = #data.text
+						data.description = fields.title or ""
 						data.page = 1
 						data.owner = data.owner or ""
 						local lpp = 14

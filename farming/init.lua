@@ -424,47 +424,12 @@ minetest.register_node("farming:weed", {
 
 --rnd: fertilizer
 minetest.register_craftitem("farming:fertilizer", {
-	description = S("Fertilizer - use to fertilize/inspect soil"),
+	description = S("Fertilizer - insert into mature composter to fertilize plants"),
 	inventory_image = "farming_fertilizer.png",
-
-	on_use = function(itemstack, user, pointed_thing)
-		local pt = pointed_thing
-		if not pt or pt.type ~= "node" then	return end -- check if pointing at a node
-		
-		local under = minetest.get_node(pt.under);	local upos = pointed_thing.under
-
-		if minetest.is_protected(upos, user:get_player_name()) then	minetest.record_protection_violation(upos, user:get_player_name())return end
-
-		local p = {x = pt.under.x, y = pt.under.y + 1, z = pt.under.z};	local above = minetest.get_node(p)
-
-		if under.name~="farming:soil_wet" then return end -- check if pointing at farming soil
-		
-		
-		local meta = minetest.get_meta(pt.under); local nutrient = meta:get_int("nutrient");
-		
-		local userpos = user:get_pos();
-		local userdist = math.max(math.abs(userpos.x - p.x), math.abs(userpos.z - p.z));
-		if userdist<1 then 
-			minetest.chat_send_player(user:get_player_name(),"#soil nutrient : " .. nutrient)
-			return itemstack
-		end
-		
-		if above.name ~= "air" then	minetest.set_node(p,{name = "air"})	end
-		if nutrient == 20 then return itemstack end
-		
-		nutrient = nutrient + 10; if nutrient>20 then nutrient = 20 end
-		meta:set_int("nutrient",nutrient);
-		meta:set_string("infotext", "nutrient " .. nutrient)
-		
-		minetest.sound_play("default_dig_crumbly", {pos = pt.under, gain = 0.5})
-
-		return itemstack:take_item(itemstack:get_count()-1)
-	end,
-	
 })
 
 minetest.register_craft({
-	output = "farming:fertilizer",
+	output = "farming:fertilizer 5",
 	recipe = {
 		{"default:leaves"},
 		{"default:leaves"},
@@ -473,7 +438,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "farming:fertilizer",
+	output = "farming:fertilizer 5",
 	recipe = {
 		{"default:papyrus"},
 		{"default:papyrus"},
@@ -508,7 +473,7 @@ function farming.plant_growth_timer(pos, elapsed, node_name)
 	else
 		local under = minetest.get_node({ x = pos.x, y = pos.y - 1, z = pos.z })
 
-		if minetest.get_item_group(under.name, "soil") < 3 then
+		if under.name ~= 'compost:wood_barrel_3' then
 			return true
 		end
 		
@@ -568,18 +533,17 @@ function farming.plant_growth_timer(pos, elapsed, node_name)
 	end
 	
 	
-	--rnd: handle dirt nutrient depletion here
+	--rnd: handle composter nutrient depletion here
 	local dmeta = minetest.get_meta({ x = pos.x, y = pos.y - 1, z = pos.z });
-	local nutrient = dmeta:get_int("nutrient"); -- nutrient level
-	nutrient = nutrient-math.floor(growth);
-	if nutrient <0 then
+	local inv = dmeta:get_inventory()
+	local fertilizer_stack = ItemStack("farming:fertilizer");
+	if not inv:contains_item("nutrient", fertilizer_stack) then 
 		minetest.swap_node(pos,{name = "farming:weed"});
 		minetest.get_meta(pos):set_string("infotext","use fertilizer on dirt before planting")
-		return;
+		return 
 	end
+	inv:remove_item("nutrient", fertilizer_stack)
 	
-	dmeta:set_int("nutrient", nutrient);
-	dmeta:set_string("infotext","nutrient "..nutrient) --minetest.get_meta(pos)
 	--rnd end
 	
 	
@@ -688,7 +652,7 @@ function farming.place_seed(itemstack, placer, pointed_thing, plantname)
 
 	-- can I replace above node, and am I pointing at soil
 	if not minetest.registered_nodes[above.name].buildable_to
-	or minetest.get_item_group(under.name, "soil") < 2
+	or under.name~='compost:wood_barrel_3'
 	-- avoid multiple seed placement bug
 	or minetest.get_item_group(above.name, "plant") ~= 0 then
 		return

@@ -183,19 +183,6 @@ basic_robot.commands.insert_item = function(name,item, inventory,dir)
 	
 	local inv = minetest.get_meta(pos):get_inventory();
 	
-	-- fertilize if soil
-	if item == "farming:fertilizer" then
-		local stack = ItemStack(item);
-		if minetest.get_node(tpos).name == "farming:soil_wet" and (meta:get_int("admin")==1 or inv:contains_item("main", stack)) then
-			inv:remove_item("main", stack);
-			local nutrient = tmeta:get_int("nutrient");	nutrient = nutrient + 10; if nutrient>20 then nutrient = 20 end
-			tmeta:set_int("nutrient",nutrient);
-			minetest.set_node({x=tpos.x,y=tpos.y+1,z=tpos.z},{name = "air"})
-			return true
-		end
-	end
-	
-	
 	local tinv = minetest.get_meta(tpos):get_inventory();
 	
 	if not inventory then inventory = "main"; end

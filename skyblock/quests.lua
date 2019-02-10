@@ -134,10 +134,9 @@ skyblock.quests[1] = { -- level 1
 skyblock.quests[3] = {
 	
 	on_craft = {
-		["default:bookshelf"]={reward = "farming:rhubarb_3", count=10, description = "craft 10 bookshelves",
+		["default:bookshelf"]={reward = "farming:rhubarb_3 3", count=10, description = "craft 10 bookshelves",
 		on_completed = function(pos,name)
-				minetest.chat_send_player(name,
-				minetest.colorize("orange", "#SKYBLOCK: READ CAREFULY: place rhubarb on farming dirt ( prepare dirt with hoe). Be careful to fertilize dirt first and fix any weeds while growing by punching them in time."))
+				minetest.chat_send_player(name,	minetest.colorize("orange", "#SKYBLOCK: FARMING: place rhubarb seed on matured composter. Be careful to insert fertilizer in composter first. Fix any weeds while growing by punching them before 5 minutes elapse."))
 				return true
 			end,
 		},
