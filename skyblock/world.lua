@@ -135,7 +135,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	end
 	
 	vm:set_data(vdata)
-	vm:calc_lighting(emin,emax)
+	vm:calc_lighting()
 	vm:write_to_map(vdata)
 	vm:update_liquids()
 end) 
