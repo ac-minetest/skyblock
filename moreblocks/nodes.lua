@@ -1,11 +1,11 @@
 --[[
 More Blocks: node definitions
 
-Copyright (c) 2011-2017 Hugo Locurcio and contributors.
+Copyright © 2011-2019 Hugo Locurcio and contributors.
 Licensed under the zlib license. See LICENSE.md for more information.
 --]]
 
-local S = moreblocks.intllib
+local S = moreblocks.S
 
 local sound_dirt = default.node_sound_dirt_defaults()
 local sound_wood = default.node_sound_wood_defaults()
@@ -459,6 +459,21 @@ for name, def in pairs(nodes) do
 	def.tiles = def.tiles or {"moreblocks_" ..name.. ".png"}
 	minetest.register_node("moreblocks:" ..name, def)
 	minetest.register_alias(name, "moreblocks:" ..name)
+
+	def_copy = table.copy(def)
+
+	-- Use the primary tile for all sides of cut glasslike nodes.
+	-- This makes them easier to see
+	if
+		#def_copy.tiles > 1 and
+		def_copy.drawtype and
+		def_copy.drawtype == "glasslike_framed" or
+		def_copy.drawtype == "glasslike_framed_optional"
+	then
+		def.tiles = {def_copy.tiles[1]}
+	end
+
+
 	if not def.no_stairs then
 		local groups = {}
 		for k, v in pairs(def.groups) do groups[k] = v end

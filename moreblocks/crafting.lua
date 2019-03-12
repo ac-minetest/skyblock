@@ -1,7 +1,7 @@
 --[[
 More Blocks: crafting recipes
 
-Copyright (c) 2011-2017 Hugo Locurcio and contributors.
+Copyright © 2011-2019 Hugo Locurcio and contributors.
 Licensed under the zlib license. See LICENSE.md for more information.
 --]]
 
@@ -36,6 +36,15 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = "moreblocks:wood_tile_center 9",
+	recipe = {
+		{"group:wood", "group:wood", "group:wood"},
+		{"group:wood", "moreblocks:wood_tile", "group:wood"},
+		{"group:wood", "group:wood", "group:wood"},
+	}
+})
+
+minetest.register_craft({
 	output = "moreblocks:wood_tile 9",
 	recipe = {
 		{"group:wood", "group:wood", "group:wood"},
@@ -48,15 +57,6 @@ minetest.register_craft({
 	type = "shapeless",
 	output = "moreblocks:wood_tile",
 	recipe = {"moreblocks:wood_tile_flipped"}
-})
-
-minetest.register_craft({
-	output = "moreblocks:wood_tile_center 9",
-	recipe = {
-		{"group:wood", "group:wood", "group:wood"},
-		{"group:wood", "moreblocks:wood_tile", "group:wood"},
-		{"group:wood", "group:wood", "group:wood"},
-	}
 })
 
 minetest.register_craft({
@@ -94,11 +94,11 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "moreblocks:circle_stone_bricks 8",
+	output = "moreblocks:circle_stone_bricks 5",
 	recipe = {
-		{"default:stone", "default:stone", "default:stone"},
-		{"default:stone", "", "default:stone"},
-		{"default:stone", "default:stone", "default:stone"},
+		{"", "default:stone", ""},
+		{"default:stone", "default:coal_lump", "default:stone"},
+		{"", "default:stone", ""},
 	}
 })
 
@@ -156,10 +156,11 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "moreblocks:stone_tile 4",
+	output = "moreblocks:stone_tile 9",
 	recipe = {
-		{"default:cobble", "default:cobble"},
-		{"default:cobble", "default:cobble"},
+		{"default:cobble", "default:cobble", "default:cobble"},
+		{"default:cobble", "default:stone", "default:cobble"},
+		{"default:cobble", "default:cobble", "default:cobble"},
 	}
 })
 
@@ -388,13 +389,10 @@ minetest.register_craft({
 	recipe = {"default:mese_crystal_fragment", "moreblocks:super_glow_glass"},
 })
 
-
---rnd : recipe fix
 minetest.register_craft({
-	output = 'moreblocks:coal_stone',
-	recipe = {
-		{"default:coal_lump","default:stone"}
-	}
+	output = "moreblocks:coal_stone",
+	type = "shapeless",
+	recipe = {"default:coal_lump", "default:stone"},
 })
 
 minetest.register_craft({
