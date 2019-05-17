@@ -22,7 +22,7 @@ skyblock.quests[1] = { -- level 1
 	},
 	
 	on_craft = {
-		["compost:wood_barrel"]={reward = "default:lava_source", count=16, description = "craft 16 composters and produce 32 dirt",
+		["compost:wood_barrel"]={reward = "default:lava_source", count=16, description = "hold 32 dirt in hand and craft 16 composters",
 		on_completed = function(pos,name) 
 			local player = minetest.get_player_by_name(name);
 			local inv = player:get_inventory();
@@ -58,7 +58,7 @@ skyblock.quests[1] = { -- level 1
 		local player = minetest.get_player_by_name(name);
 		local inv = player:get_inventory();
 		inv:add_item("craft",ItemStack("basic_protect:protector")) 
-		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get protector as reward.")
+		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get protector as reward. When you place it it goes 4 blocks below center of your island.")
 		
 		skyblock.init_level(name,2); -- start level 2
 		
@@ -124,8 +124,8 @@ skyblock.quests[1] = { -- level 1
 		local inv = player:get_inventory();
 		inv:add_item("craft",ItemStack("default:water_source")) 
 		minetest.chat_send_player(name,"#SKYBLOCK: congratulations! you get another water source as reward. place it diagonally to another water to make infinite water source.")
-		local privs = core.get_player_privs(name); privs.fast = true; core.set_player_privs(name, privs); minetest.auth_reload()
-		minetest.chat_send_player(name,"#SKYBLOCK: you got fast privs as reward!")
+		local privs = core.get_player_privs(name); privs.fast = true; privs.robot = true; core.set_player_privs(name, privs); minetest.auth_reload()
+		minetest.chat_send_player(name,"#SKYBLOCK: you got fast and robot privs (you can use up to 4 robots) as reward!")
 		skyblock.init_level(name,3); -- start level 3
 	end,
  }

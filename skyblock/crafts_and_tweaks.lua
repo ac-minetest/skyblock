@@ -124,9 +124,9 @@ minetest.register_craft({
 
 -- stone_with_iron
 minetest.register_craft({
-	output = 'default:stone_with_iron 2',
+	output = 'basic_machines:iron_dust_00 2', --default:stone_with_iron 2',
 	recipe = {
-		{'basic_machines:iron_extractor'},
+		{'default:steel_ingot'},
 		{'default:stone'},
 	}
 })
@@ -134,18 +134,18 @@ minetest.register_craft({
 
 -- stone_with_copper
 minetest.register_craft({
-	output = 'default:stone_with_copper 2',
+	output = 'basic_machines:copper_dust_00 2',
 	recipe = {
-		{'basic_machines:copper_extractor'},
+		{'default:copper_ingot'},
 		{'default:stone'},
 	}
 })
 
 
 minetest.register_craft({
-	output = 'default:stone_with_tin 2',
+	output = 'basic_machines:tin_dust_00 2',
 	recipe = {
-		{'basic_machines:tin_extractor'},
+		{'default:tin_ingot'},
 		{'default:stone'},
 	}
 })
@@ -153,9 +153,9 @@ minetest.register_craft({
 
 -- stone_with_gold
 minetest.register_craft({
-	output = 'default:stone_with_gold 2',
+	output = 'basic_machines:gold_dust_00 2',
 	recipe = {
-		{'basic_machines:gold_extractor'},
+		{'default:gold_ingot'},
 		{'default:stone'},
 	}
 })
@@ -163,9 +163,9 @@ minetest.register_craft({
 
 -- stone_with_mese
 minetest.register_craft({
-	output = 'default:stone_with_mese 2',
+	output = 'basic_machines:mese_dust_00 2',
 	recipe = {
-		{'basic_machines:mese_extractor'},
+		{'default:mese_crystal'},
 		{'default:stone'},
 	}
 })
@@ -174,9 +174,9 @@ minetest.register_craft({
 
 -- stone_with_diamond
 minetest.register_craft({
-	output = 'default:stone_with_diamond 2',
+	output = 'basic_machines:diamond_dust_00 2',
 	recipe = {
-		{'basic_machines:diamond_extractor'},
+		{'default:diamond'},
 		{'default:stone'},
 	}
 })
@@ -417,7 +417,7 @@ minetest.register_abm({
 
 
 minetest.override_item('default:cobble', {
-	drop = "default:gravel 2"
+	drop = "default:gravel"
 })
 
 
