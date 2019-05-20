@@ -114,7 +114,7 @@ skyblock.quests[1] = { -- level 1
 			end
 		
 		},
-		["default:stone_with_iron"]={reward = "default:jungleleaves 6", count=50, description = "craft 100 stone with iron"},
+		["basic_machines:iron_dust_00"]={reward = "default:jungleleaves 6", count=50, description = "craft 100 iron dust"},
 	},
 	
 	on_completed = function(name) -- what to do when level completed?
@@ -142,8 +142,8 @@ skyblock.quests[3] = {
 		},
 		["farming:rhubarb_pie"]={reward = "default:diamond", count=10, description = "bake 10 Rhubarb pie"},
 		["default:brick"]={reward = "moreores:mineral_silver", count=100, description = "craft 100 Brick"},
-		["default:stone_with_copper"]={reward = "default:gold_lump", count=50, description = "craft 100 Stone with Copper"},
-		["default:stone_with_mese"]={reward = "default:grass_1", count=25, description = "craft 50 Stone with Mese",
+		["basic_machines:copper_dust_00"]={reward = "default:gold_lump", count=50, description = "craft 100 copper dust"},
+		["basic_machines:mese_dust_00"]={reward = "default:grass_1", count=25, description = "craft 50 mese dust",
 			on_completed = function(pos,name)
 				minetest.chat_send_player(name,"#SKYBLOCK: place grass on dirt and wait. You will get green dirt which will spread around and slowly grow more grass and flowers. You can get seeds by digging grass.")
 				return true
