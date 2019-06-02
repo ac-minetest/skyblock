@@ -38,11 +38,11 @@ load_shops = function()
 	local file,err = io.open(filepath..'/shops', 'rb')
 	if err then minetest.log("#basic_shop: error cant load data") return end
 	
-	local told = minetest.get_gametime()  - basic_shop.time_left;
+	local told = minetest.get_gametime()  - basic_shop.time_left; -- time of oldest shop before timeout
 	local data = minetest.deserialize(file:read("*a")) or {};file:close()
 	local out = {}	
 	for i = 1,#data do
-		if data[i][4]>told then -- not too old
+		if data[i][4]>told then -- shop is recent, not too old
 			out[#out+1] = data[i]
 			player_shops[data[i][5]] = (player_shops[data[i][5]] or 0) + 1 -- how many shops player has
 		end
@@ -199,6 +199,7 @@ basic_shop.show_shop_gui = function(name)
 	"box[0.35,-0.1;9.05,0.65;#111]".."box[5,-0.1;4.4,0.65;#111]"..
 	"box[0.35,7.2;9.05,0.15;#111]" ..  -- horizontal lines
 	"field[0.65,7.9;2,0.5;search;;".. guidata.filter .."] button[2.5,7.6;1.5,0.5;filter;refresh]"..
+	"button[4,7.6;1,0.5;help;help]"..
 	"button[6.6,7.6;1,0.5;left;<] button[8.6,7.6;1,0.5;right;>]" ..
 	"label[7.6,7.6; " .. math.floor(idx/m)+1 .." / " .. math.floor(n/m)+1 .."]";
 	
@@ -212,18 +213,23 @@ basic_shop.show_shop_gui = function(name)
 		local id = idxdata[i];
 		local y = 1.3+(i-idx)*0.65
 		local ti = tonumber(data[id][4]) or 0; 
-		ti = (t+ti)/60; -- time left in minutes: time_left - (t-ti) = time_left-t + ti
-		if ti<0 then ti = 0 end
-		
 		local time_left = ""
-		if ti<60 then 
-			time_left = math.floor(ti*10)/10 .. "m"
-		elseif ti< 1440 then 
-			time_left =  math.floor(ti/60*10)/10 .. "h"
-		else
-			time_left =  math.floor(ti/1440*10)/10 .. "d"
-		end
 		
+		ti = (t+ti); 
+		if ti> basic_shop.time_left then -- shop by pro player, no time limit
+			time_left = "no limit"
+		else
+			ti = ti/60; -- time left in minutes: time_left - (t-ti) = time_left-t + ti
+			if ti<0 then ti = 0 end
+			if ti<60 then 
+				time_left = math.floor(ti*10)/10 .. "m"
+			elseif ti< 1440 then 
+				time_left =  math.floor(ti/60*10)/10 .. "h"
+			else
+				time_left =  math.floor(ti/1440*10)/10 .. "d"
+			end
+		end
+	
 		tabdata[i-idx+1] = 
 		"item_image[0.4,".. y-0.1 .. ";0.7,0.7;".. data[id][1] .. "]" .. -- image
 		"label[1.1,".. y .. ";x ".. data[id][2] .. "/" .. data[id][6] .. "]" .. -- total_quantity
@@ -250,6 +256,39 @@ minetest.register_on_player_receive_fields(
 		if formname~="basic_shop" then return end
 		local name = player:get_player_name()
 		if not basic_shop.guidata[name] then init_guidata(name) end
+		
+		--[[
+		if balance < 5 then -- new player
+			minetest.chat_send_player(name,"#basic_shop: you need at least 5$ to sell items")
+			return
+		elseif balance<100 then -- noob
+			if shop_count>1 then allow = false end
+		elseif balance<1000 then -- medium
+			if shop_count>5 then allow = false end
+		else -- pro
+			if shop_count>25 then allow = false end
+		end
+		if not allow then 
+			minetest.chat_send_player(name,"#basic_shop: you need more money if you want more shops (100 for 5, 1000+ for 25).")
+			return
+		end
+		--]]
+		
+		if fields.help then
+			local name = player:get_player_name();
+				local text = "Make a shop using /sell command while holding item to sell in hands. "..
+				"As your basic income you get 1 money for each 12 minutes of play, but only up to 100.\n\n"..
+				"Depending on how much money you have (/shop_money command) you get ability to create " ..
+				"more shops with variable life span:\n\n"..
+				"    balance 0-4     : new player, can't create shops yet\n"..
+				"    balance 0-99    : new trader, 1 shop\n"..
+				"    balance 100-999 : medium trader, 5 shops\n"..
+				"    balance 1000+   : pro trader,  25 shops\n\n"..
+				"All trader shop lifetime is one week ( after that shop closes down), for pro traders unlimited lifetime."				
+				local form = "size [6,7] textarea[0,0;6.5,8.5;help;SHOP HELP;".. text.."]"
+				minetest.show_formspec(name, "basic_shop:help", form)
+			return
+		end
 		
 		if fields.left then
 			local guidata = basic_shop.guidata[name]
@@ -456,6 +495,9 @@ minetest.register_chatcommand("sell", {
 		local data = basic_shop.data;
 		--{"item name", quantity, price, time_left, seller}
 		data[#data+1 ] = { itemname, count, price, minetest.get_gametime(), name, total_count};
+		
+		data[#data][4] = 10^15; -- if player is 'pro' then remove time limit, shop will never be too old
+		
 		minetest.chat_send_player(name,"#basic_shop : " .. itemname .. " x " .. count .."/"..total_count .." put on sale for the price " .. price .. ". To remove item simply go /shop and buy it (for free).")
 		
 		
