@@ -353,8 +353,8 @@ minetest.register_globalstep(
 						end
 					end
 					
-					local count = pdata[qtype][item] or -1;
-					local tcount = qdef.count or -1;
+					local count = pdata[qtype][item] or 0;
+					local tcount = qdef.count or 0;
 					local desc = qdef.description or "ERROR!";
 					if count>=tcount then 
 						desc = minetest.colorize("Green", desc) 
