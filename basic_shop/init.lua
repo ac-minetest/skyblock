@@ -13,7 +13,7 @@ selling: /sell price adds items in hand to shop OK
 
 modname = "basic_shop";
 basic_shop = {};
-basic_shop.data = {}; -- {"item name", quantity, price, time_left, seller, minimal sell quantity}
+basic_shop.data = {}; -- {"item name", quantity, price, time_left, seller, how many items left to sell}
 basic_shop.guidata = {}; -- [name] = {idx = idx, filter = filter, sort = sort } (start index on cur. page, filter item name, sort_coloumn)
 basic_shop.bank = {}; -- bank for offline players, [name] = {balance, deposit_time}, 
 
@@ -281,7 +281,7 @@ minetest.register_on_player_receive_fields(
 				"Depending on how much money you have (/shop_money command) you get ability to create " ..
 				"more shops with variable life span:\n\n"..
 				"    balance 0-4     : new player, can't create shops yet\n"..
-				"    balance 0-99    : new trader, 1 shop\n"..
+				"    balance 5-99    : new trader, 1 shop\n"..
 				"    balance 100-999 : medium trader, 5 shops\n"..
 				"    balance 1000+   : pro trader,  25 shops\n\n"..
 				"All trader shop lifetime is one week ( after that shop closes down), for pro traders unlimited lifetime."				
@@ -348,6 +348,15 @@ minetest.register_on_player_receive_fields(
 						local bank_balance = bank_account[1] or 0;
 						basic_shop.bank[seller] = {bank_balance + price, minetest.get_gametime()} -- balance, time of deposit.
 					end
+				else -- shop owner buys all and removes shop 
+					local inv = player:get_inventory();
+					inv:add_item("main",shop_item[1] .. " " .. shop_item[6]);
+					player_shops[seller] = (player_shops[seller] or 1) - 1;
+					local data = {};
+					for i = 1,sel-1 do data[i] = make_table_copy(basic_shop.data[i]) end -- expensive, but ok for 'small'<1000 number of shops
+					for i = sel+1,#basic_shop.data do data[i-1] = make_table_copy(basic_shop.data[i]) end
+					basic_shop.data = data;
+					return
 				end
 				
 				local inv = player:get_inventory();

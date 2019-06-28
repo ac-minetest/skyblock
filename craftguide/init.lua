@@ -486,7 +486,6 @@ if sfinv then
 	sfinv.register_page("sfinv:craftguide", {
 		title = "Craft Guide",
 		get = function(self, player, context)
-
 			local tmp = {
 			"size[8,8.6]",
 			"bgcolor[#080808BB;true]" .. default.gui_bg .. default.gui_bg_img,
@@ -495,6 +494,10 @@ if sfinv then
 			"button[2,0.;4,1;craft_guide_show;SHOW CRAFT GUIDE]"
 			}
 			return table.concat(tmp, "")
+		end,
+		
+		on_enter = function(self, player, context)
+			craftguide:on_use(nil, player)
 		end,
 		
 		on_player_receive_fields = function(self, player, context, fields)

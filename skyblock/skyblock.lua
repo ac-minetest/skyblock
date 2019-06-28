@@ -117,12 +117,27 @@ function load_player_data(name)
 		local pdatastring = file:read("*a");
 		file:close()
 		pdata = minetest.deserialize(pdatastring) or {};
+	else
+		minetest.chat_send_all("#skyblock: problem loading player data for " .. name .. " from file")
 	end
 	
 	pdata.stats = pdata.stats or {};  -- init
 	pdata.stats.time_played = pdata.stats.time_played or 0
 	pdata.stats.last_login = minetest.get_gametime() -- update
-	skyblock.players[name] = pdata; return
+	skyblock.players[name] = pdata; 
+
+	-- verify data vs quest data definitions
+	local level = pdata.level; if not level then return end	
+	for k,v in pairs( skyblock.quests[level] ) do 
+		if quest_types[k] then
+			local w = pdata[k];	if not w then pdata[k] = {}; w = pdata[k] end
+			for k_,v_ in pairs(v) do
+				w[k_] = w[k_] or 0; -- if quests update define progress and set it to 0
+			end
+		end
+	end	
+	
+	return
 end 
  
 function save_player_data(name)
@@ -353,8 +368,8 @@ minetest.register_globalstep(
 						end
 					end
 					
-					local count = pdata[qtype][item] or 0;
-					local tcount = qdef.count or 0;
+					local count = pdata[qtype][item] or -1;
+					local tcount = qdef.count or -1;
 					local desc = qdef.description or "ERROR!";
 					if count>=tcount then 
 						desc = minetest.colorize("Green", desc) 

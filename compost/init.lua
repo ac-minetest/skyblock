@@ -120,7 +120,6 @@ minetest.register_node("compost:wood_barrel_3", {
 	sounds =  default.node_sound_wood_defaults(),
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos);
-		meta:set_string("infotext","composter ready. Punch to get dirt or use it for farming - right click to insert nutrients.")
 		update_composter_formspec(pos)
 	end,
 	
@@ -143,6 +142,8 @@ minetest.register_abm({
 	chance = 5,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		minetest.swap_node(pos, {name = "compost:wood_barrel_3"})
+		local meta = minetest.get_meta(pos);
+		meta:set_string("infotext","Composter ready. Punch to get dirt or use it for farming - right click to insert nutrients.")
 	end,
 })
 

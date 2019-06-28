@@ -161,17 +161,16 @@ if not init then
 		return {p1,p2, nodeidx}		
 	end
 	
-	get_boxes = function(blockdata)
+	get_boxes = function(blockdata,boxdata)
 	
 		local dx = blockdata[1][2].x
 		local dy = blockdata[1][2].y
 		local dz = blockdata[1][2].z
 		
-		local boxdata = {}; -- will mark 'done' areas as true
+		for k,v in pairs(boxdata) do boxdata[k] = nil end
 		local res = {}; -- list of boxes
 		
 		
-		local air_id = xxx
 		for x=1,dx do 
 			boxdata[x] = {} 
 			for y = 1,dy do
@@ -287,12 +286,12 @@ if not init then
 	--box = get_box({x=3,y=1,z=2},blockdata)
 	--say(serialize(box))
 	
-	local boxes = get_boxes(blockdata);
+	local boxdata = {};
+	local boxes = get_boxes(blockdata,boxdata);
 	self.label("dimensions " .. blockdata[1][2].x .. " " .. blockdata[1][2].y .. " " .. blockdata[1][2].z  .. ", n^3/7 = " .. blockdata[1][2].x*blockdata[1][2].y*blockdata[1][2].z/7 .. ", boxes " .. #boxes )
 	--dout(serialize(boxes))
 	
 	render_boxes(blockdata,boxes)
 	
-	-- PROBLEM: why some boxes at end missing? is it next id problem? it seems it skips id in for loop
 
 end
