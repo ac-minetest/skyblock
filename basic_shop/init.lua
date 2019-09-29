@@ -13,10 +13,11 @@ selling: /sell price adds items in hand to shop OK
 
 modname = "basic_shop";
 basic_shop = {};
-basic_shop.data = {}; -- {"item name", quantity, price, time_left, seller, how many items left to sell}
+basic_shop.data = {}; -- {"item name", quantity, price, time_left, seller, minimal sell quantity}
 basic_shop.guidata = {}; -- [name] = {idx = idx, filter = filter, sort = sort } (start index on cur. page, filter item name, sort_coloumn)
 basic_shop.bank = {}; -- bank for offline players, [name] = {balance, deposit_time}, 
 
+basic_shop.version = "20190929a"
 
 
 basic_shop.items_on_page = 8
@@ -281,7 +282,7 @@ minetest.register_on_player_receive_fields(
 				"Depending on how much money you have (/shop_money command) you get ability to create " ..
 				"more shops with variable life span:\n\n"..
 				"    balance 0-4     : new player, can't create shops yet\n"..
-				"    balance 5-99    : new trader, 1 shop\n"..
+				"    balance 0-99    : new trader, 1 shop\n"..
 				"    balance 100-999 : medium trader, 5 shops\n"..
 				"    balance 1000+   : pro trader,  25 shops\n\n"..
 				"All trader shop lifetime is one week ( after that shop closes down), for pro traders unlimited lifetime."				
@@ -348,15 +349,6 @@ minetest.register_on_player_receive_fields(
 						local bank_balance = bank_account[1] or 0;
 						basic_shop.bank[seller] = {bank_balance + price, minetest.get_gametime()} -- balance, time of deposit.
 					end
-				else -- shop owner buys all and removes shop 
-					local inv = player:get_inventory();
-					inv:add_item("main",shop_item[1] .. " " .. shop_item[6]);
-					player_shops[seller] = (player_shops[seller] or 1) - 1;
-					local data = {};
-					for i = 1,sel-1 do data[i] = make_table_copy(basic_shop.data[i]) end -- expensive, but ok for 'small'<1000 number of shops
-					for i = sel+1,#basic_shop.data do data[i-1] = make_table_copy(basic_shop.data[i]) end
-					basic_shop.data = data;
-					return
 				end
 				
 				local inv = player:get_inventory();
@@ -434,6 +426,7 @@ minetest.register_chatcommand("shop_top", {
 });
 
 
+-- player selling his product - makes new shop
 minetest.register_chatcommand("sell", { 
 	description = "",
 	privs = {
@@ -444,7 +437,7 @@ minetest.register_chatcommand("sell", {
 		for word in param:gmatch("%S+") do words[#words+1]=word end
 		local price, count, total_count
 		if #words == 0  then
-			minetest.chat_send_player(name,"#basic_shop: /sell price, where price must be between 0 and " .. basic_shop.maxprice .."\nadvanced: /sell price count total_sell_count")
+			minetest.chat_send_player(name,"#basic_shop " .. basic_shop.version .. " : /sell price, where price must be between 0 and " .. basic_shop.maxprice .."\nadvanced: /sell price count total_sell_count")
 			return
 		end
 		
@@ -471,25 +464,30 @@ minetest.register_chatcommand("sell", {
 		local shop_count = (player_shops[name] or 0)+1;
 		local balance = get_money(player);
 		
-		local allow = true
+		local allow = true -- do we let player make new shop
 		if balance < 5 then -- new player
 			minetest.chat_send_player(name,"#basic_shop: you need at least 5$ to sell items")
 			return
 		elseif balance<100 then -- noob
-			if shop_count>1 then allow = false end
+			if shop_count>1 then allow = false end -- 1 shop for noob
 		elseif balance<1000 then -- medium
-			if shop_count>5 then allow = false end
+			if shop_count>5 then allow = false end -- 5 shop for medium
 		else -- pro
-			if shop_count>25 then allow = false end
+			if shop_count>25 then allow = false end -- 25 shop for pro
 		end
 		if not allow then 
 			minetest.chat_send_player(name,"#basic_shop: you need more money if you want more shops (100 for 5, 1000+ for 25).")
 			return
 		end
 		
-		if stack:get_wear()>0 then 
-			minetest.chat_send_player(name,"#basic_shop: you can't sell used tools/weapons")
-			return
+		-- check players inventory for worn out items of this type, if found dont allow selling
+		local inv = player:get_inventory()
+		for i = 1, inv:get_size("main") do
+			local stack = inv:get_stack("main", i)
+			if itemname == stack:get_name() and stack:get_wear()>0 then 
+				minetest.chat_send_player(name,"#basic_shop: found used tool/weapon you are selling in your inventory. Remove it and try again.")
+				return
+			end
 		end
 		
 		local sstack = ItemStack(itemname.. " " .. total_count);
@@ -505,7 +503,7 @@ minetest.register_chatcommand("sell", {
 		--{"item name", quantity, price, time_left, seller}
 		data[#data+1 ] = { itemname, count, price, minetest.get_gametime(), name, total_count};
 		
-		data[#data][4] = 10^15; -- if player is 'pro' then remove time limit, shop will never be too old
+		if balance>= 1000 then data[#data][4] = 10^15; end -- if player is 'pro' then remove time limit, shop will never be too old
 		
 		minetest.chat_send_player(name,"#basic_shop : " .. itemname .. " x " .. count .."/"..total_count .." put on sale for the price " .. price .. ". To remove item simply go /shop and buy it (for free).")
 		
