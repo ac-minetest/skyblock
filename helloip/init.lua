@@ -10,7 +10,7 @@ local database = helloip.db;
 local modpath = minetest.get_modpath("helloip")
 
 -- load csv db
-local f = assert(io.open(modpath .. "\\dbip-country-2017-03.csv", "r"))
+local f = assert(io.open(modpath .. "/dbip-country-2017-03.csv", "r"))
 local csv = f:read("*all")
 f:close()
 

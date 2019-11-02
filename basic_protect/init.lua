@@ -543,13 +543,13 @@ end
 -- load data on server start	
 --local modpath = minetest.get_modpath("basic_protect")
 local modpath = minetest.get_worldpath();
-local f = io.open(modpath .. "\\swap.dat", "r"); local swapstring = "";
+local f = io.open(modpath .. "/swap.dat", "r"); local swapstring = "";
 if f then swapstring = f:read("*all") or "";f:close() end
 
 basic_protect.swap = minetest.deserialize(swapstring) or {};
 
 minetest.register_on_shutdown(function() -- save swap data on shutdown
-	local f = assert(io.open(modpath .. "\\swap.dat", "w"))
+	local f = assert(io.open(modpath .. "/swap.dat", "w"))
 	local swapstring = f:write(minetest.serialize(basic_protect.swap))
 	f:close()
 end

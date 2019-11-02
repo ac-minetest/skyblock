@@ -167,7 +167,7 @@ basic_shop.show_shop_gui = function(name)
 	
 	if filter == "" then
 		for i = 1,#data do idxdata[i] = i end
-		guidata.count = #data
+		guidata.count = #idxdata
 	else
 		for i = 1,#data do
 			if string.find(data[i][1],filter) then
@@ -359,6 +359,8 @@ minetest.register_on_player_receive_fields(
 						basic_shop.bank[seller] = {bank_balance + price, minetest.get_gametime()} -- balance, time of deposit.
 					end
 				end
+				
+				if seller == name then shop_item[2] = shop_item[6] end -- this will sell all items if owner buys
 				
 				local inv = player:get_inventory();
 				inv:add_item("main",shop_item[1] .. " " .. shop_item[2]);

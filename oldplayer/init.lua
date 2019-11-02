@@ -72,7 +72,7 @@ minetest.register_on_leaveplayer(function(player, timed_out)
 		inv:set_stack("oldplayer", 1, ItemStack("oldplayer"));
 	else -- delete player profile
 		
-		local filename = worldpath .. "\\players\\" .. name;
+		local filename = worldpath .. "/players/" .. name;
 		
 		-- PROBLEM: deleting doesnt always work? seems minetest itself is saving stuff.
 		-- so we wait a little and then delete
@@ -90,7 +90,7 @@ end
 
 -- delete file if not old player
 local function remove_non_old_player_file(name)
-	local filename = worldpath.."\\players\\"..name;
+	local filename = worldpath.."/players/"..name;
 	local f=io.open(filename,"r")
 	local s = f:read("*all"); f:close();
 	if string.find(s,"Item oldplayer") then return false else os.remove(filename) return true end
@@ -98,20 +98,20 @@ end
 
 -- deletes data with no corresponding playerfiles from auth.txt and creates auth_new.txt
 local function player_file_exists(name)
-	local f=io.open(worldpath.."\\players\\"..name,"r")
+	local f=io.open(worldpath.."/players/"..name,"r")
 	if f~=nil then io.close(f) return true else return false end
 end
 
 local function remove_missing_players_from_auth()
 	
-	local playerfilelist = minetest.get_dir_list(worldpath.."\\players", false);
+	local playerfilelist = minetest.get_dir_list(worldpath.."/players", false);
 	
-	local f = io.open(worldpath.."\\auth.txt", "r");
+	local f = io.open(worldpath.."/auth.txt", "r");
 	if not f then return end
 	local s = f:read("*a");f:close();
 	local p1,p2;
 
-	f = io.open(worldpath.."\\auth_new.txt", "w");
+	f = io.open(worldpath.."/auth_new.txt", "w");
 	if not f then return end
 	
 	local playerlist = {};
@@ -159,7 +159,7 @@ local function remove_missing_players_from_auth()
 end
 
 local function remove_non_old_player_files()
-	local playerfilelist = minetest.get_dir_list(worldpath.."\\players", false);
+	local playerfilelist = minetest.get_dir_list(worldpath.."/players", false);
 
 	local count = 0;
 	for _,name in ipairs(playerfilelist) do
