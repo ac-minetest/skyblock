@@ -419,7 +419,7 @@ end)
 minetest.register_chatcommand("shop", {  -- display shop browser
 	description = "",
 	privs = {
-		privs = interact
+		interact = true
 	},
 	func = function(name, param)
 		basic_shop.show_shop_gui(name)
@@ -429,7 +429,7 @@ minetest.register_chatcommand("shop", {  -- display shop browser
 minetest.register_chatcommand("shop_top", {  
 	description = "",
 	privs = {
-		privs = interact
+		interact = true
 	},
 	func = function(name, param)
 		display_toplist(name)
@@ -441,7 +441,7 @@ minetest.register_chatcommand("shop_top", {
 minetest.register_chatcommand("sell", { 
 	description = "",
 	privs = {
-		privs = interact
+		interact = true
 	},
 	func = function(name, param)
 		local words = {};
@@ -525,7 +525,7 @@ minetest.register_chatcommand("sell", {
 minetest.register_chatcommand("shop_money", { 
 	description = "",
 	privs = {
-		privs = interact
+		interact = true
 	},
 	func = function(name, param)
 		if not param or param == "" then param = name end
@@ -538,7 +538,7 @@ minetest.register_chatcommand("shop_money", {
 minetest.register_chatcommand("shop_set_money", { 
 	description = "",
 	privs = {
-		privs = kick
+		kick = true
 	},
 	func = function(name, param)
 		local pname, amount
