@@ -94,7 +94,7 @@ function(pos, newnode, placer, oldnode)	track_quest(pos,newnode.name, placer, "o
 
 -- track craft item
 minetest.register_on_craft(
-function(itemstack, player, old_craft_grid, craft_inv)	track_quest(nil, itemstack:get_name(), player, "on_craft") end
+function(itemstack, player, old_craft_grid, craft_inv)	track_quest(player:getpos(), itemstack:get_name(), player, "on_craft") end
 )
  
 -- SAVING/LOADING DATA: player data, skyblock data
