@@ -15,6 +15,7 @@ basic_robot.maxoperations = 10; -- how many operations (dig, place,move,...,gene
 basic_robot.dig_require_energy = true; -- does robot require energy to dig stone?
 
 basic_robot.bad_inventory_blocks = { -- disallow taking from these nodes inventories to prevent player abuses
+    ["moreblocks:circular_saw"] = true,
 	["craft_guide:sign_wall"] = true,
 	["basic_machines:battery_0"] = true,
 	["basic_machines:battery_1"] = true,
@@ -25,7 +26,7 @@ basic_robot.bad_inventory_blocks = { -- disallow taking from these nodes invento
 
 basic_robot.http_api = minetest.request_http_api(); 
 
-basic_robot.version = "2019/10/01a";
+basic_robot.version = "2019/12/03a";
 
 basic_robot.gui = {}; local robogui = basic_robot.gui -- gui management
 basic_robot.data = {}; -- stores all robot related data
