@@ -156,7 +156,7 @@ basic_protect.protect_new = function(p,name)
 		local skyid = skyblock.players[name].id;
 		local skypos = skyblock.get_island_pos(skyid);
 		local dist = math.max(math.abs(p.x-skypos.x),math.abs(p.z-skypos.z));
-		if dist>=skyblock.islands_gap then 
+		if dist>=skyblock.islands_gap or p.y<500 then
 			local privs = minetest.get_player_privs(name);
 			if not privs.kick then 
 				minetest.chat_send_player(name, "#PROTECTOR: you can only protect empty space or your island or above it")
