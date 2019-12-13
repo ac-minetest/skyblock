@@ -328,7 +328,7 @@ mt.register_on_player_receive_fields(function(player, formname, fields)
 		data.items = progressive_mode and data.init_filter_items or datas.init_items
 		craftguide:get_formspec(player_name)
 
-	elseif fields.alternate then
+	elseif fields.alternate and data.recipes_item then
 		local recipe = data.recipes_item[data.recipe_num + 1]
 		data.recipe_num = recipe and data.recipe_num + 1 or 1
 		craftguide:get_formspec(player_name)

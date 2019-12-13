@@ -94,7 +94,7 @@ function(pos, newnode, placer, oldnode)	track_quest(pos,newnode.name, placer, "o
 
 -- track craft item
 minetest.register_on_craft(
-function(itemstack, player, old_craft_grid, craft_inv)	track_quest(nil, itemstack:get_name(), player, "on_craft") end
+function(itemstack, player, old_craft_grid, craft_inv)	track_quest(player:getpos(), itemstack:get_name(), player, "on_craft") end
 )
  
 -- SAVING/LOADING DATA: player data, skyblock data
@@ -118,7 +118,7 @@ function load_player_data(name)
 		file:close()
 		pdata = minetest.deserialize(pdatastring) or {};
 	else
-		minetest.chat_send_all("#skyblock: problem loading player data for " .. name .. " from file")
+		print("#skyblock: problem loading player data for " .. name .. " from file")
 	end
 	
 	pdata.stats = pdata.stats or {};  -- init

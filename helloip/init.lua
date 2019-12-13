@@ -80,7 +80,7 @@ print("#helloip: ".. step .. " ip range entries loaded.")
 -- load country codelist from ccode.txt 
 -- copied as text from https://en.wikipedia.org/wiki/ISO_3166-1
 
-local f = assert(io.open(modpath .. "\\ccode.txt", "r"))
+local f = assert(io.open(modpath .. "/ccode.txt", "r"))
 local cc = f:read("*all");f:close()
 local ccodes = {}
 
