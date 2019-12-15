@@ -747,7 +747,7 @@ basic_robot.commands.craftcache = {};
 
 basic_robot.commands.craft = function(item, mode, idx,amount, name)
 	amount = amount and tonumber(amount) or 1;
-	if amount<0 then amount = 1 end
+	if amount<1 then amount = 1 end
 	if not item then return false end
 
 	
