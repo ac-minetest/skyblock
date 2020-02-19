@@ -467,9 +467,12 @@ minetest.register_chatcommand("sell", {
 		
 		if not count then count = stack:get_count() else count = tonumber(count) or 1 end
 		if count<1 then count = 1 end
+
 		if not total_count then total_count = count else total_count = tonumber(total_count) or count end
-		if total_count<count then total_count = count end; 
-		
+        if count>64000 then count = 64000 end -- overflow check
+        if total_count<count then total_count = count end;
+        if total_count>64000 then total_count = 64000 end
+
 		if itemname == "" then return end
 		
 		local shop_count = (player_shops[name] or 0)+1;
