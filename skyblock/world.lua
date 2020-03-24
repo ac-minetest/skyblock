@@ -92,9 +92,8 @@ skyblock.delete_island = function(pos, is_check) -- is_check: do we check for no
 	
 	if is_check then
 		local count = #minetest.find_nodes_in_area({x=ppos.x-5,y=ppos.y-5,z=ppos.z-5}, {x=ppos.x+5,y=ppos.y+5,z=ppos.z+5}, {"default:dirt"});
-		if is_check and count==1 then delete = false end -- we have 1 dirt
-		--minetest.chat_send_all("#SKYBLOCK: detected " .. count .. " air near " .. ppos.x .. " " .. ppos.y .. " " .. ppos.z)
-		if not delete and minetest.find_node_near(ppos, 5, "default:chest") then delete = true end
+		if count==1 then delete = false end -- we have only 1 dirt
+		if not delete and minetest.find_node_near(ppos, 5, {"default:chest","default:tree","default:wood"}) then delete = true end
 	end
 	
 	if delete then
