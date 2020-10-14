@@ -26,7 +26,7 @@ basic_robot.bad_inventory_blocks = { -- disallow taking from these nodes invento
 
 basic_robot.http_api = minetest.request_http_api(); 
 
-basic_robot.version = "2019/12/03a";
+basic_robot.version = "2020/10/14a";
 
 basic_robot.gui = {}; local robogui = basic_robot.gui -- gui management
 basic_robot.data = {}; -- stores all robot related data
@@ -1567,6 +1567,14 @@ minetest.register_on_player_receive_fields(
 				end
 				local meta = minetest.get_meta(pos);
 				if not lines then return end
+
+   				if meta:get_int("authlevel") > 1 and name ~= meta:get_string("owner")then
+					local privs = minetest.get_player_privs(name); -- only admin can edit admin robot code
+					if not privs.privs then
+						return
+					end
+				end
+
 				local code = table.concat(lines,"\n");
 				meta:set_string("code",code);
 				basic_robot.editor[name].lines = {};
