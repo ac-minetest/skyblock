@@ -444,8 +444,9 @@ basic_robot.commands.write_book = function(name,title,text) -- returns itemstack
 	local data = {} 
 	
 	if title == "" or not title then title = "program book "..minetest.get_gametime() end
-	data.title = title or ""
-	data.text = text or ""
+	if text == "" or not text then text = "empty" end
+	data.text = text
+	data.title = title
 	data.text_len = #data.text
 	data.page = 1
 	data.description = title or ""
@@ -747,7 +748,7 @@ basic_robot.commands.craftcache = {};
 
 basic_robot.commands.craft = function(item, mode, idx,amount, name)
 	amount = amount and tonumber(amount) or 1;
-	if amount<1 then amount = 1 end
+	if amount<0 then amount = 1 end
 	if not item then return false end
 
 	
@@ -1152,7 +1153,7 @@ basic_robot.commands.machine = {
 		
 		
 		energy = data.menergy or 0;
-		if amount>energy then return nil,"energy too low" end
+		if amount>energy or amount<0 then return nil,"energy too low" end
 		
 		if not tdata.menergy then tdata.menergy = 0 end
 		tdata.menergy = tdata.menergy + amount
